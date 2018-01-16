@@ -14,8 +14,8 @@ scout.page('Phone Number', [12]);
 scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-123-4567', 'phone');
 scout.radio('.cell-phone-number-1', '',
   [
-    {text: 'Mentor', color: 'info'},
-    {text: 'Student', color: 'info'}
+    {text: 'Mentor', color: 'info', value: true},
+    {text: 'Student', color: 'info', value: false}
   ], 'occupation', true);
 
 // Auto
@@ -25,42 +25,42 @@ scout.checkbox('.cell-auto-1', 'L Switch',
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'leftSwitchAuto', true);
 scout.checkbox('.cell-auto-2', 'R Switch',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'rightSwitchAuto', true);
 scout.checkbox('.cell-auto-3', 'L Scale',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'leftScaleAuto', true);
 scout.checkbox('.cell-auto-1', 'R Scale',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'rightScaleAuto', true);
 scout.checkbox('.cell-auto-2', '2 Cube Auto',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'twoCubeAuto', true);
 scout.checkbox('.cell-auto-3', 'Exchange Station',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger'}
+    {text: 'Nope', color: 'danger', value: false}
   ], 'exchangeAuto', true);
 
 // Teleop
@@ -75,10 +75,10 @@ scout.radio('.cell-tele-op-1', 'Preferred Robot Role',
 scout.textarea('.cell-tele-op-1', 'Robot Role Notes', 'Notes...', 'robotRoleNotes', false);
 scout.radio('.cell-tele-op-2', 'Climb',
   [
-    {text: 'Support', color: 'info'},
-    {text: 'No Support', color: 'warning'},
-    {text: 'Nope', color: 'danger'}
-  ], 'robotRole', true);
+    {text: 'Support', color: 'info', value: 'support'},
+    {text: 'No Support', color: 'warning', value: 'self'},
+    {text: 'Nope', color: 'danger', value: false}
+  ], 'climb', true);
 scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
   [
     {text: '5', color: 'info'},
@@ -89,14 +89,14 @@ scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
     {text: '30', color: 'info'}
   ], 'climbTime', false);
 scout.textarea('.cell-tele-op-2', 'Climb Notes', 'Notes...', 'climbNotes', false);
-scout.radio('.cell-tele-op-3', 'Loading Cubes',
+scout.radio('.cell-tele-op-3', 'Cube Loading Method',
   [
     {text: 'Pneumatics', color: 'info'},
     {text: 'Roller', color: 'info'},
     {text: 'Other', color: 'info'}
   ], 'cubeLoadMethod', true);
-scout.input('.cell-tele-op-3', 'Other', 'Loading Cubes...', 'cubeLoadOther', false);
-scout.radio('.cell-tele-op-3', 'Loading Cubes 2',
+scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadOther', false);
+scout.radio('.cell-tele-op-3', 'Cube Loading Location',
   [
     {text: 'Ground', color: 'info'},
     {text: 'Portal', color: 'info'}
@@ -106,7 +106,7 @@ $(document).ready(function () {
   $('.btn-15-3').click(function () {
     $('.in-16').fadeIn(1000);
   });
-  $('.btn-12-4').click(function () {
+  $('.btn-12-3').click(function () {
     $('.mc-13').fadeOut(1000);
   });
 });
@@ -132,13 +132,13 @@ scout.radio('.cell-other-info-2', 'Drive Train',
 scout.text('.cell-other-info-3', 'Cheesecakability', 24);
 scout.radio('.cell-other-info-3', 'Willingness',
   [
-    {text: '👍', color: 'success'},
-    {text: '👎', color: 'danger'}
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
   ], 'cheeseWillingness', true);
 scout.radio('.cell-other-info-3', 'Space on Robot',
   [
-    {text: '👍', color: 'success'},
-    {text: '👎', color: 'danger'}
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
   ], 'cheeseSpace', true);
 scout.input('.cell-other-info-2', 'Weight of Robot', 'In pounds...', 'weight', true);
 
