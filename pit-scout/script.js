@@ -11,7 +11,7 @@ scout.login('.cell-pit-scouting-1', 1540);
 
 // Phone Number
 scout.page('Phone Number', [12]);
-scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-123-4567', 'phone');
+scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
 scout.radio('.cell-phone-number-1', '',
   [
     {text: 'Mentor', color: 'info', value: true},
@@ -20,28 +20,28 @@ scout.radio('.cell-phone-number-1', '',
 
 // Auto
 scout.page('Auto', [4, 4, 4]);
-scout.checkbox('.cell-auto-1', 'L Switch',
+scout.checkbox('.cell-auto-1', 'Left Switch',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
     {text: 'Nope', color: 'danger', value: false}
   ], 'leftSwitchAuto', true);
-scout.checkbox('.cell-auto-2', 'R Switch',
+scout.checkbox('.cell-auto-2', 'Right Switch',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
     {text: 'Nope', color: 'danger', value: false}
   ], 'rightSwitchAuto', true);
-scout.checkbox('.cell-auto-3', 'L Scale',
+scout.checkbox('.cell-auto-3', 'Left Scale',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
     {text: 'Right Auto'},
     {text: 'Nope', color: 'danger', value: false}
   ], 'leftScaleAuto', true);
-scout.checkbox('.cell-auto-1', 'R Scale',
+scout.checkbox('.cell-auto-1', 'Right Scale',
   [
     {text: 'Left Auto'},
     {text: 'Mid Auto'},
@@ -76,7 +76,7 @@ scout.textarea('.cell-tele-op-1', 'Robot Role Notes', 'Notes...', 'robotRoleNote
 scout.radio('.cell-tele-op-2', 'Climb',
   [
     {text: 'Support', color: 'info', value: 'support'},
-    {text: 'No Support', color: 'warning', value: 'self'},
+    {text: 'Solo', color: 'warning', value: 'self'},
     {text: 'Nope', color: 'danger', value: false}
   ], 'climb', true);
 scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
@@ -88,7 +88,12 @@ scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
     {text: '25', color: 'info'},
     {text: '30', color: 'info'}
   ], 'climbTime', false);
-scout.textarea('.cell-tele-op-2', 'Climb Notes', 'Notes...', 'climbNotes', false);
+scout.radio('.cell-other-info-3', 'Climb On Us',
+  [
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
+  ], 'climbOnUs', true);
+scout.textarea('.cell-tele-op-2', 'Climb Notes', 'Notes...', 'climbNotes', true);
 scout.radio('.cell-tele-op-3', 'Cube Loading Method',
   [
     {text: 'Pneumatics', color: 'info'},
@@ -96,15 +101,15 @@ scout.radio('.cell-tele-op-3', 'Cube Loading Method',
     {text: 'Other', color: 'info'}
   ], 'cubeLoadMethod', true);
 scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadOther', false);
-scout.radio('.cell-tele-op-3', 'Cube Loading Location',
+scout.checkbox('.cell-tele-op-3', 'Cube Loading Location',
   [
-    {text: 'Ground', color: 'info'},
-    {text: 'Portal', color: 'info'}
+    {text: 'Ground'},
+    {text: 'Portal'}
   ], 'cubeLoad', true);
 $(document).ready(function () {
-  $('.in-16').hide();
-  $('.btn-15-3').click(function () {
-    $('.in-16').fadeIn(1000);
+  $('.in-17').hide();
+  $('.btn-16-3').click(function () {
+    $('.in-17').fadeIn(1000);
   });
   $('.btn-12-3').click(function () {
     $('.mc-13').fadeOut(1000);
@@ -118,9 +123,10 @@ scout.radio('.cell-other-info-1', 'Language of Robot Code',
     {text: 'Java', color: 'info'},
     {text: 'LabView', color: 'info'},
     {text: 'C++', color: 'info'},
-    {text: 'Kotlin', color: 'info'},
-    {text: 'Python', color: 'info'}
+    {text: 'Python', color: 'info'},
+    {text: 'Other', color: 'info'}
   ], 'lang', true);
+scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLand', false);
 scout.radio('.cell-other-info-2', 'Drive Train',
   [
     {text: '4 Wheel', color: 'info'},
@@ -141,6 +147,12 @@ scout.radio('.cell-other-info-3', 'Space on Robot',
     {text: '👎', color: 'danger', value: false}
   ], 'cheeseSpace', true);
 scout.input('.cell-other-info-2', 'Weight of Robot', 'In pounds...', 'weight', true);
+$(document).ready(function () {
+  $('.in-20').hide();
+  $('.btn-19-6').click(function () {
+    $('.in-20').fadeIn(1000);
+  });
+});
 
 // Photo
 scout.page('Photo and Finish', [12]);
