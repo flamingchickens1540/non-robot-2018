@@ -1,0 +1,127 @@
+/* .cell-login-3, .cell-login-1{
+  background-image: url('tristan.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 50vh;
+} */
+.fieldpic{
+  position: fixed;
+  left: 10vw;
+  top: 5vw;
+}
+.counter-input{
+  width: 50px;
+}
+.cell-teleop-1{
+  min-width: 100vw !important;
+  height: 80vh;
+  /* margin-left: -9.6vw !important; */
+  padding-left: 0 !important;
+  padding-right: 0;
+  background: url('field.png');
+  background-repeat: no-repeat;
+  background-position: left;
+  background-size: 80vw 60vh;
+}
+.body-div-teleop{
+  overflow: hidden;
+}
+.button-scale{
+  position: relative;
+  left: 38vw;
+  top: 38.5vh;
+  height: 3.5vh;
+  width: 4vw;
+  font-size: .9vw;
+}
+.button-bluePortal1{
+  position: relative;
+  left: -2.5vw;
+  top: 12.5vh;
+  height: 3.5vh;
+  font-size: .9vw;
+  width: 7.5vw;
+}
+.button-redPortal1{
+  position: relative;
+  left: 52vw;
+  top: 12.5vh;
+  height: 3.5vh;
+  font-size: .9vw;
+  width: 7.5vw;
+}
+.button-bluePortal2{
+  position: relative;
+  left: -10vw;
+  top: 65vh;
+  height: 3.5vh;
+  font-size: .9vw;
+  width: 7.5vw;
+}
+.button-redPortal2{
+  position: relative;
+  left: 44.5vw;
+  top: 65.25vh;
+  height: 3.5vh;
+  width: 7.5vw;
+  font-size: .9vw;
+}
+.button-blueSwitch{
+  position: relative;
+  left: 16.5vw;
+  top: 51vh;
+  height: 3.5vh;
+  width: 6.5vw;
+  font-size: .9vw;
+}
+.button-redSwitch{
+  position: relative;
+  left: -17.5vw;
+  top: 51vh;
+  height: 3.5vh;
+  width: 6.5vw;
+  font-size: .9vw;
+}
+.button-redExchange{
+  position: relative;
+  left: -54.8vw;
+  top: 30vh;
+  height: 3.5vh;
+    width: 8vw;
+  font-size: .9vw;
+}
+.button-blueExchange{
+  position: relative;
+  left: 24.8vw;
+  top: 46.5vh;
+  height: 3.5vh;
+  width: 8vw;
+  font-size: .9vw;
+}
+/* bal */
+.button-redPlatform{
+  position: relative;
+  left: -41.5vw;
+  top: 33vh;
+  height: 3.5vh;
+  width: 7vw;
+  font-size: .9vw;
+}
+.button-bluePlatform{
+  position: relative;
+  left: -18.5vw;
+  top: 33vh;
+  height: 3.5vh;
+  width: 7vw;
+  font-size: .9vw;
+}
+.body-div-teleop br, .body-div-teleop hr, .body-div-teleop h1{
+  display: none;
+}
+.body-div-teleop .nav-btns{
+  display: auto;
+}
+.hidden{
+  display: none;
+}
