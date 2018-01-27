@@ -125,3 +125,6 @@
 .hidden{
   display: none;
 }
+.modal-header{
+  text-align: center;
+}

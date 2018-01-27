@@ -131,14 +131,20 @@ scout.checkbox(
 scout.cycle(
   '.cell-auto-3',
   'Boxes on switch',
-  [{text: 1, color: 'success'}, {text: 2, color: 'success'}],
+  [
+    {text: 1, color: 'success'},
+    {text: 2, color: 'success'}
+  ],
   'switchAuto',
   true
 )
 scout.cycle(
   '.cell-auto-4',
   'Boxes on Scale',
-  [{text: 1, color: 'success'}, {text: 2, color: 'success'}],
+  [
+    {text: 1, color: 'success'},
+    {text: 2, color: 'success'}
+  ],
   'scaleAuto',
   true
 )
@@ -146,177 +152,52 @@ scout.cycle(
 scout.page(
   'Teleop', [12]
 )
-$(document).ready(function () {
+// $(document).ready(function () {
   //************************************ Arrays for loops
   var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
-  var names = ["scale", "blue portal 1", "blue portal 2", "red portal 1", "red portal 2", "blue switch", "red switch", "blue exchange", "red exchange", "blue platform", "red platform", "giza"]
+  var names = ["Scale", "Blue Portal 1", "Blue Portal 2", "Red Portal 1", "Red Portal 2", "Blue Switch", "Red Switch", "Blue Exchange", "Red Exchange", "Blue platform", "Red platform", "Giza"]
   //************************************ Loop creating the div's and the buttons
   for (var i = 0; i < buttons.length; i++) {
-    $('.cell-teleop-1').append('<div class="div' + buttons[i] + '"></div>')
-    $('.div' + buttons[i]).addClass('hidden')
+    $('.cell-teleop-1').append(`
+      <div class='modal fade modal-` + buttons[i] + `' role='dialog'>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" style="text-align:center;">
+              <h3>` + names[i] + `</h3>
+            </div>
+            <div class="modal-body">
+              <div class='div` + buttons[i] + `'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `)
     if (buttons[i].indexOf("blue") == 0) {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-' + buttons[i] + '">' + names[i] + '</button>');
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-' + buttons[i] + '" data-toggle="modal" data-target=".modal-' + buttons[i] + '">' + names[i] + '</button>');
     }
     else if (buttons[i].indexOf("red") == 0) {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-' + buttons[i] + '">' + names[i] + '</button>');
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-' + buttons[i] + '"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">' + names[i] + '</button>');
     }
     else if (buttons[i].indexOf("giza") == 0) {
       if ($('.role-name').text().indexOf("Blue") == 0){
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;">Cube Zone</button>')
-        scout.radio(
-          '.divbluePlatform',
-          'Climbing',
-          [{
-            text: 'Climbed Front',
-            color: 'info',
-            value: 'climbFront'
-          },
-          {
-            text: 'Climbed Side',
-            color: 'info',
-            value: 'climbSide'
-          },
-          {
-            text: 'Assisted Climb',
-            color: 'info',
-            value: 'assist'
-          },
-          {
-            text: 'Levitate',
-            color: 'info',
-            value: 'levitate'
-          },
-          {
-            text: 'Parking',
-            color: 'info',
-            value: 'parking'
-          }],
-          'start'
-        );
-        $('.divbluePlatform .bg-9').removeClass('btn-group')
-        $('.divbluePlatform .scout-mc').after('')
-        scout.checkbox(
-          '.divblueExchange',
-          'Blue Exchange Cubes',
-          [
-            {
-              text: 'Recived Cube',
-              color: 'info',
-              value: 'load'
-            },
-            {
-              text: 'Placed Cube',
-              color: 'info',
-              value: 'place'
-            }
-          ],
-          'blueExchange'
-        );
-        scout.cycle(
-          '.divgiza',
-          'Boxes taken from the Pyramid',
-          [{text: 1, color: 'info'}],
-          'pyramid',
-          false
-        )
-        scout.cycle(
-          '.divbluePortal1',
-          'Boxes taken from portal',
-          [{text: 1, color: 'info'}],
-          'bluePortal',
-          false
-        )
-        scout.cycle(
-          '.divbluePortal2',
-          'Boxes taken from portal',
-          [{text: 1, color: 'info'}],
-          'bluePortal',
-          false
-        )
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
       }
       else{
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 17vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;">Cube Zone</button>')
-        scout.radio(
-          '.divredPlatform',
-          'Climbing',
-          [{
-            text: 'Climbed Front',
-            color: 'danger',
-            value: 'climbFront'
-          },
-          {
-            text: 'Climbed Side',
-            color: 'danger',
-            value: 'climbSide'
-          },
-          {
-            text: 'Assisted Climb',
-            color: 'danger',
-            value: 'assist'
-          },
-          {
-            text: 'Levitate',
-            color: 'danger',
-            value: 'levitate'
-          },
-          {
-            text: 'Parking',
-            color: 'danger',
-            value: 'parking'
-          }],
-          'start'
-        );
-        $('.divredPlatform .bg-9').removeClass('btn-group')
-        $('.divredPlatform .scout-mc').after('')
-        scout.checkbox(
-          '.divredExchange',
-          'Red Exchange Cubes',
-          [
-            {
-              text: 'Recived Cube',
-              color: 'danger',
-              value: 'load'
-            },
-            {
-              text: 'Placed Cube',
-              color: 'danger',
-              value: 'place'
-            }
-          ],
-          'redExchange'
-        );
-        scout.cycle(
-          '.divgiza',
-          'Boxes taken from the Pyramid',
-          [{text: 1, color: 'danger'}],
-          'pyramid',
-          false
-        )
-        scout.cycle(
-          '.divredPortal1',
-          'Boxes taken from portal',
-          [{text: 1, color: 'danger'}],
-          'redPortal',
-          false
-        )
-        scout.cycle(
-          '.divredPortal2',
-          'Boxes taken from portal',
-          [{text: 1, color: 'danger'}],
-          'redPortal',
-          false
-        )
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 17vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
       }
     }
     else {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale">Scale</button>')
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale" data-toggle="modal" data-target=".modal-' + buttons[i] + '">Scale</button>')
     }
   }
   //************************************ Tele scouting functions
   scout.cycle(
     '.divscale',
     'Boxes on Scale',
-    [{text: 1, color: 'success'}],
+    [
+      {text: 1, color: 'success'},
+      {text: 1, color: 'success'}
+    ],
     'scale',
     false
   )
@@ -348,31 +229,174 @@ $(document).ready(function () {
     'bluePlatformCube',
     false
   )
+  if ($('.role-name').text().indexOf("Blue") == 0){
+    scout.radio(
+      '.divbluePlatform',
+      'Climbing',
+      [{
+        text: 'Climbed Front',
+        color: 'info',
+        value: 'climbFront'
+      },
+      {
+        text: 'Climbed Side',
+        color: 'info',
+        value: 'climbSide'
+      },
+      {
+        text: 'Assisted Climb',
+        color: 'info',
+        value: 'assist'
+      },
+      {
+        text: 'Levitate',
+        color: 'info',
+        value: 'levitate'
+      },
+      {
+        text: 'Parking',
+        color: 'info',
+        value: 'parking'
+      }],
+      'start'
+    );
+    $('.divbluePlatform .bg-9').removeClass('btn-group')
+    $('.divbluePlatform .scout-mc').after('')
+    scout.checkbox(
+      '.divblueExchange',
+      'Blue Exchange Cubes',
+      [
+        {
+          text: 'Recived Cube',
+          color: 'info',
+          value: 'load'
+        },
+        {
+          text: 'Placed Cube',
+          color: 'info',
+          value: 'place'
+        }
+      ],
+      'blueExchange'
+    );
+    scout.cycle(
+      '.divgiza',
+      'Boxes taken from the Pyramid',
+      [{text: 1, color: 'info'}],
+      'pyramid',
+      false
+    )
+    scout.cycle(
+      '.divbluePortal1',
+      'Boxes taken from portal',
+      [{text: 1, color: 'info'}],
+      'bluePortal',
+      false
+    )
+    scout.cycle(
+      '.divbluePortal2',
+      'Boxes taken from portal',
+      [{text: 1, color: 'info'}],
+      'bluePortal',
+      false
+    )
+  }
+  else{
+    scout.radio(
+      '.divredPlatform',
+      'Climbing',
+      [{
+        text: 'Climbed Front',
+        color: 'danger',
+        value: 'climbFront'
+      },
+      {
+        text: 'Climbed Side',
+        color: 'danger',
+        value: 'climbSide'
+      },
+      {
+        text: 'Assisted Climb',
+        color: 'danger',
+        value: 'assist'
+      },
+      {
+        text: 'Levitate',
+        color: 'danger',
+        value: 'levitate'
+      },
+      {
+        text: 'Parking',
+        color: 'danger',
+        value: 'parking'
+      }],
+      'start'
+    );
+    $('.divredPlatform .bg-9').removeClass('btn-group')
+    $('.divredPlatform .scout-mc').after('')
+    scout.checkbox(
+      '.divredExchange',
+      'Red Exchange Cubes',
+      [
+        {
+          text: 'Recived Cube',
+          color: 'danger',
+          value: 'load'
+        },
+        {
+          text: 'Placed Cube',
+          color: 'danger',
+          value: 'place'
+        }
+      ],
+      'redExchange'
+    );
+    scout.cycle(
+      '.divgiza',
+      'Boxes taken from the Pyramid',
+      [{text: 1, color: 'danger'}],
+      'pyramid',
+      false
+    )
+    scout.cycle(
+      '.divredPortal1',
+      'Boxes taken from portal',
+      [{text: 1, color: 'danger'}],
+      'redPortal',
+      false
+    )
+    scout.cycle(
+      '.divredPortal2',
+      'Boxes taken from portal',
+      [{text: 1, color: 'danger'}],
+      'redPortal',
+      false
+    )
+}
+for (var i = 0; i < buttons.length; i++) {
+  if ($('.div' + buttons[i]).html() == '') {
+      $('.div' + buttons[i]).append('<span>Sorry, This Robot is Useless Here</span>')
+    }
+  }
+// })
 //should I seperate portals?
 //Defense
 //Done button
 //Div
   //************************************ Loop creating the notys and running the click functions for the buttons
-  for (var i = 0; i < buttons.length; i++) {
-    if ($('.div' + buttons[i]).html() == '') {
-        $('.div' + buttons[i]).append('<span>Sorry, This Robot is Useless Here</span>')
-    }
-    var info = buttons[i]
-    var a = 'noty' + info
-    var b = new Noty({
-      type: 'success',
-      layout: 'center',
-      closeWith:["button"],
-      text: $('.div' + buttons[i]).html()
-    })
-    eval("var noty" + info + " = b")
-    $('.button-' + info).click(function () {
-      var z = $(this).attr('class').indexOf("button")
-      var y = $(this).attr('class').substr(z + 7)
-      eval("noty" + y).show()
-    })
-  }
-})
+    // var a = 'noty' + info
+    // var b = new Noty({
+    //   type: 'success',
+    //   layout: 'center',
+    //   closeWith:["button"],
+    //   text: $('.div' + buttons[i])
+    // })
+    // eval("var noty" + info + " = b")
+    // $('.button-' + info).click(function () {
+    //   var z = $(this).attr('class').indexOf("button")
+    //   var y = $(this).attr('class').substr(z + 7)
+    //   eval("noty" + y).show()
+    // })
   // $('.cell-teleop-1').append('<div class="noty-scale"></div>')
   // scout.cycle(
   //   '.noty-scale',
