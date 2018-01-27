@@ -24,7 +24,7 @@
   }
 ```
 
-### m1-r1-1540-cycle.json
+### 1540-cycle.json
 ```json
   {
     "switch": [4000, 5000],
