@@ -1,6 +1,7 @@
 # JSON File Format
 
 ## Stand Scouting
+### m1-r1-1540.json
 ```json
   {
     "start": "left",
@@ -20,6 +21,14 @@
     "bluePlatform": "",
     "climbNotes": "",
     "notes": ""
+  }
+```
+
+### m1-r1-1540-cycle.json
+```json
+  {
+    "switch": [4000, 5000],
+    "scale": [5500, 6001]
   }
 ```
 
