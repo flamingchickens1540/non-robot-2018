@@ -133,7 +133,7 @@ scout.radio('.cell-other-info-1', 'Language of Robot Code',
     {text: 'Python', color: 'info'},
     {text: 'Other', color: 'info', class: 'other-lang'}
   ], 'lang', true);
-scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLand', false, 'lang-other');
+scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLang', false, 'lang-other');
 scout.radio('.cell-other-info-2', 'Drive Train',
   [
     {text: '4 Wheel', color: 'info'},
