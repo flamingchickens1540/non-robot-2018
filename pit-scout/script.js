@@ -62,6 +62,13 @@ scout.checkbox('.cell-auto-3', 'Exchange Station',
     {text: 'Right Auto'},
     {text: 'Nope', color: 'danger', value: false}
   ], 'exchangeAuto', true);
+scout.checkbox('.cell-auto-2', 'Cross Line',
+  [
+    {text: 'Left Auto'},
+    {text: 'Mid Auto'},
+    {text: 'Right Auto'},
+    {text: 'Nope', color: 'danger', value: false}
+  ], 'lineAuto', true);
 
 // Teleop
 scout.page('Tele-Op', [4, 5, 3]);
@@ -77,7 +84,7 @@ scout.radio('.cell-tele-op-2', 'Climb',
   [
     {text: 'Support', color: 'info', value: 'support'},
     {text: 'Solo', color: 'warning', value: 'self'},
-    {text: 'Nope', color: 'danger', value: false}
+    {text: 'Nope', color: 'danger', value: false, class: 'no-climb'}
   ], 'climb', true);
 scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
   [
@@ -87,7 +94,7 @@ scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
     {text: '20', color: 'info'},
     {text: '25', color: 'info'},
     {text: '30', color: 'info'}
-  ], 'climbTime', false);
+  ], 'climbTime', false, 'climb-time');
 scout.radio('.cell-other-info-3', 'Climb On Us',
   [
     {text: '👍', color: 'success', value: true},
@@ -98,35 +105,35 @@ scout.radio('.cell-tele-op-3', 'Cube Loading Method',
   [
     {text: 'Pneumatics', color: 'info'},
     {text: 'Roller', color: 'info'},
-    {text: 'Other', color: 'info'}
-  ], 'cubeLoadMethod', true);
-scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadOther', false);
+    {text: 'Other', color: 'info', class: 'cube-other-load'}
+  ], 'cubeLoadMethod', true, 'cube-load');
+scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadOther', false, 'other-load');
 scout.checkbox('.cell-tele-op-3', 'Cube Loading Location',
   [
     {text: 'Ground'},
     {text: 'Portal'}
   ], 'cubeLoad', true);
 $(document).ready(function () {
-  $('.in-17').hide();
-  $('.btn-16-3').click(function () {
-    $('.in-17').fadeIn(1000);
+  $('.other-load').hide();
+  $('.cube-other-load').click(function () {
+    $('.other-load').fadeIn(1000);
   });
-  $('.btn-12-3').click(function () {
-    $('.mc-13').fadeOut(1000);
+  $('.no-climb').click(function () {
+    $('.climb-time').parent().parent().fadeOut(1000);
   });
 });
 
 // Other info
-scout.page('Other Info', [4, 4, 4]);
+scout.page('Other Info', [6, 6]);
 scout.radio('.cell-other-info-1', 'Language of Robot Code',
   [
     {text: 'Java', color: 'info'},
     {text: 'LabView', color: 'info'},
     {text: 'C++', color: 'info'},
     {text: 'Python', color: 'info'},
-    {text: 'Other', color: 'info'}
+    {text: 'Other', color: 'info', class: 'other-lang'}
   ], 'lang', true);
-scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLand', false);
+scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLand', false, 'lang-other');
 scout.radio('.cell-other-info-2', 'Drive Train',
   [
     {text: '4 Wheel', color: 'info'},
@@ -135,22 +142,22 @@ scout.radio('.cell-other-info-2', 'Drive Train',
     {text: 'Shifting', color: 'info'},
     {text: 'Swerve', color: 'info'}
   ], 'driveTrain', true);
-scout.text('.cell-other-info-3', 'Cheesecakability', 24);
-scout.radio('.cell-other-info-3', 'Willingness',
-  [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
-  ], 'cheeseWillingness', true);
-scout.radio('.cell-other-info-3', 'Space on Robot',
-  [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
-  ], 'cheeseSpace', true);
+// scout.text('.cell-other-info-3', 'Cheesecakability', 24);
+// scout.radio('.cell-other-info-3', 'Willingness',
+//   [
+//     {text: '👍', color: 'success', value: true},
+//     {text: '👎', color: 'danger', value: false}
+//   ], 'cheeseWillingness', true);
+// scout.radio('.cell-other-info-3', 'Space on Robot',
+//   [
+//     {text: '👍', color: 'success', value: true},
+//     {text: '👎', color: 'danger', value: false}
+//   ], 'cheeseSpace', true);
 scout.input('.cell-other-info-2', 'Weight of Robot', 'In pounds...', 'weight', true);
 $(document).ready(function () {
-  $('.in-20').hide();
-  $('.btn-19-6').click(function () {
-    $('.in-20').fadeIn(1000);
+  $('.lang-other').hide();
+  $('.other-lang').click(function () {
+    $('.lang-other').fadeIn(1000);
   });
 });
 
