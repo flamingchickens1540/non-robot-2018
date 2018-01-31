@@ -107,7 +107,7 @@ scout.radio('.cell-tele-op-3', 'Cube Loading Method',
     {text: 'Roller', color: 'info'},
     {text: 'Other', color: 'info', class: 'cube-other-load'}
   ], 'cubeLoadMethod', true, 'cube-load');
-scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadOther', false, 'other-load');
+scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadMethod', false, 'other-load');
 scout.checkbox('.cell-tele-op-3', 'Cube Loading Location',
   [
     {text: 'Ground'},
@@ -133,7 +133,7 @@ scout.radio('.cell-other-info-1', 'Language of Robot Code',
     {text: 'Python', color: 'info'},
     {text: 'Other', color: 'info', class: 'other-lang'}
   ], 'lang', true);
-scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'otherLang', false, 'lang-other');
+scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'lang', false, 'lang-other');
 scout.radio('.cell-other-info-2', 'Drive Train',
   [
     {text: '4 Wheel', color: 'info'},
