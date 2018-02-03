@@ -53,9 +53,17 @@ for (var i = 0; i < data.length; i++) {
 fs.writeFileSync('export/tags.json', JSON.stringify(totTags));
 fs.writeFileSync('resources/team-cube-data.json', JSON.stringify(teamCubeData));
 var rankings = analyzeRank();
-if (!fs.existsSync('pit-data')) {
-  fs.mkdirSync('pit-data');
+if (!fs.existsSync('pit-data/')) {
+  fs.mkdirSync('pit-data/');
 }
+var pit = {};
+var pitfest = JSON.parse(fs.readFileSync('pit-data/manifest.json', 'utf8'));
+for (var i = 0; i < pitfest.length; i++) {
+  var tempPit = JSON.parse(fs.readFileSync('pit-data/' + pitfest[i], 'utf8'));
+  if (tempPit.team != undefined) {
+    pit[tempPit.team] = tempPit;
+  }
+};
 
 // Functions
 String.prototype.titleCase = function () {
@@ -404,150 +412,40 @@ function matchDisplay(a) {
     }
   };
 };
-function pit() {
-  var pit = [];
-  var pitfest = JSON.parse(fs.readFileSync('pit-data/manifest.json', 'utf8'));
-  for (var i = 0; i < pitfest.length; i++) {
-    var tempPit = JSON.parse(fs.readFileSync('pit-data/' + pitfest[i], 'utf8'));
-    if (tempPit.team != undefined) {
-      pit.push(tempPit);
-    }
-  };
-  $('.cell-pit-data-1')
-    .html(`
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th style="position: sticky; left: -1.5vw; width: 6em; background: white;">Team</th>
-            <th style="white-space: nowrap;">Scout</th>
-            <th style="white-space: nowrap;">Phone Number</th>
-            <th style="white-space: nowrap;">Left Auto</th>
-            <th style="white-space: nowrap;">Mid Auto</th>
-            <th style="white-space: nowrap;">Right Auto</th>
-            <th style="white-space: nowrap;">Preferred Role</th>
-            <th style="white-space: nowrap;">Notes</th>
-            <th style="white-space: nowrap;">Climb Type</th>
-            <th style="white-space: nowrap;">Notes</th>
-            <th style="white-space: nowrap;">Cube Load Method</th>
-            <th style="white-space: nowrap;">Cube Load Location</th>
-            <th style="white-space: nowrap;">Robot Code Language</th>
-            <th style="white-space: nowrap;">Drive Train</th>
-            <th style="white-space: nowrap;">Weight</th>
-          </tr>
-        </thead>
-        <tbody class="pit-table"></tbody>
-      </table>
-    `)
-    .css({'width': '90vw', 'overflow-x': 'scroll'})
-    .parent().after('<br><br>');
-  for (var i = 0; i < pit.length; i++) {
-    var pitKey = Object.keys(pit[i]);
-    var left = [];
-    var mid = [];
-    var right = [];
-    for (var j = 0; j < pitKey.length; j++) {
-      if (typeof pit[i][pitKey[j]] == 'object') {
-        if (pit[i][pitKey[j]].indexOf('Left Auto') >= 0) {
-          switch (pitKey[j]) {
-            case 'leftSwitchAuto':
-              left.push(' Left Switch');
-              break;
-            case 'rightSwitchAuto':
-              left.push(' Right Switch');
-              break;
-            case 'leftScaleAuto':
-              left.push(' Left Scale');
-              break;
-            case 'rightScaleAuto':
-              left.push(' Right Scale');
-              break;
-            case 'twoCubeAuto':
-              left.push(' Two Cube');
-              break;
-            case 'exchangeAuto':
-              left.push(' Exchange');
-              break;
-            case 'lineAuto':
-              left.push(' Cross Line');
-              break;
-          };
-        }
-        if (pit[i][pitKey[j]].indexOf('Mid Auto') >= 0) {
-          switch (pitKey[j]) {
-            case 'leftSwitchAuto':
-              mid.push(' Left Switch');
-              break;
-            case 'rightSwitchAuto':
-              mid.push(' Right Switch');
-              break;
-            case 'leftScaleAuto':
-              mid.push(' Left Scale');
-              break;
-            case 'rightScaleAuto':
-              mid.push(' Right Scale');
-              break;
-            case 'twoCubeAuto':
-              mid.push(' Two Cube');
-              break;
-            case 'exchangeAuto':
-              mid.push(' Exchange');
-              break;
-            case 'lineAuto':
-              mid.push(' Cross Line');
-              break;
-          };
-        }
-        if (pit[i][pitKey[j]].indexOf('Right Auto') >= 0) {
-          switch (pitKey[j]) {
-            case 'leftSwitchAuto':
-              right.push(' Left Switch');
-              break;
-            case 'rightSwitchAuto':
-              right.push(' Right Switch');
-              break;
-            case 'leftScaleAuto':
-              right.push(' Left Scale');
-              break;
-            case 'rightScaleAuto':
-              right.push(' Right Scale');
-              break;
-            case 'twoCubeAuto':
-              right.push(' Two Cube');
-              break;
-            case 'exchangeAuto':
-              right.push(' Exchange');
-              break;
-            case 'lineAuto':
-              right.push(' Cross Line');
-              break;
-          };
-        }
-      }
-    };
-    if (pit[i]['cubeLoad'] != undefined && typeof pit[i]['cubeLoad'] == 'object') {
-      for (var j = 0; j < pit[i]['cubeLoad'].length; j++) {
-        pit[i]['cubeLoad'][j] = ' ' + pit[i]['cubeLoad'];
-      };
-    }
-    $('.pit-table').append(`
-      <tr>
-        <td style="position: sticky; left: -1.5vw; width: 6em; background: white;">` + pit[i].team + `</td>
-        <td style="white-space: nowrap;">` + scouts[pit[i].scout] + `</td>
-        <td style="white-space: nowrap;">` + pit[i].phone + ' (' + (JSON.parse(pit[i].occupation) ? 'Mentor': 'Student') + `)</td>
-        <td style="white-space: nowrap;">` + left + `</td>
-        <td style="white-space: nowrap;">` + mid + `</td>
-        <td style="white-space: nowrap;">` + right + `</td>
-        <td style="white-space: nowrap;">` + pit[i].robotRole + `</td>
-        <td style="white-space: nowrap;">` + pit[i].robotRoleNotes + `</td>
-        <td style="white-space: nowrap;">` + (pit[i]['climb'] == 'false' ? 'No Climb :(' : pit[i]['climb'].titleCase()) + `</td>
-        <td style="white-space: nowrap;">` + pit[i].climbNotes + `</td>
-        <td style="white-space: nowrap;">` + pit[i].cubeLoadMethod + `</td>
-        <td style="white-space: nowrap;">` + pit[i].cubeLoad + `</td>
-        <td style="white-space: nowrap;">` + pit[i].lang + `</td>
-        <td style="white-space: nowrap;">` + pit[i].driveTrain + `</td>
-        <td style="white-space: nowrap;">` + pit[i].weight + `</td>
-      </tr>
-    `);
+function card(a, b) {
+  return (`
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">` + a + `</h5>
+        <p class="card-text">` + b + `</p>
+      </div>
+    </div>
+    <br>
+  `);
+};
+function pitHelper(a, b) {
+  switch (a) {
+    case 'leftSwitchAuto':
+      b.push(' Left Switch');
+      break;
+    case 'rightSwitchAuto':
+      b.push(' Right Switch');
+      break;
+    case 'leftScaleAuto':
+      b.push(' Left Scale');
+      break;
+    case 'rightScaleAuto':
+      b.push(' Right Scale');
+      break;
+    case 'twoCubeAuto':
+      b.push(' Two Cube');
+      break;
+    case 'exchangeAuto':
+      b.push(' Exchange');
+      break;
+    case 'lineAuto':
+      b.push(' Cross Line');
+      break;
   };
 };
 
@@ -555,9 +453,8 @@ function pit() {
 scout.page('Home', [3, 3, 3, 3]);
 scout.checkbox('.cell-home-1', '', [{text: 'Match Schedule', color: 'primary'}], 'asdf', false, 'btn-home btn-match-schedule');
 scout.checkbox('.cell-home-2', '', [{text: 'Team Lookup', color: 'primary'}], 'asdf', false, 'btn-home btn-team-lookup');
-scout.checkbox('.cell-home-3', '', [{text: 'Pit Data', color: 'primary'}], 'asdf', false, 'btn-home btn-pit-data');
-scout.checkbox('.cell-home-4', '', [{text: 'Rankings', color: 'primary'}], 'asdf', false, 'btn-home btn-rankings');
-scout.checkbox('.cell-home-1', '', [{text: 'Picklist', color: 'primary'}], 'asdf', false, 'btn-home btn-picklist');
+scout.checkbox('.cell-home-3', '', [{text: 'Rankings', color: 'primary'}], 'asdf', false, 'btn-home btn-rankings');
+scout.checkbox('.cell-home-4', '', [{text: 'Picklist', color: 'primary'}], 'asdf', false, 'btn-home btn-picklist');
 $('.btn-match-schedule').click(function () {
   $('.page-pane').fadeOut(250, function () {
     $('.body-div-match-schedule').fadeIn(500);
@@ -567,11 +464,6 @@ $('.btn-match-schedule').click(function () {
 $('.btn-team-lookup').click(function () {
   $('.page-pane').fadeOut(250, function () {
     $('.body-div-team-lookup').fadeIn(500);
-  });
-});
-$('.btn-pit-data').click(function () {
-  $('.page-pane').fadeOut(250, function () {
-    $('.body-div-pit-data').fadeIn(500);
   });
 });
 $('.btn-rankings').click(function () {
@@ -619,6 +511,27 @@ scout.input('.cell-team-lookup-1', '', '1540', 'asdf', false, 'input-team-lookup
 $('.input-team-lookup > input').keydown(function () {
   if (event.which == 13) {
     if (!enter) {
+      var left = [];
+      var mid = [];
+      var right = [];
+      for (var attr in pit[$(this).val()]) {
+        if (pit[$(this).val()].hasOwnProperty(attr)) {
+          if (pit[$(this).val()][attr].indexOf('Left Auto') >= 0) {
+            pitHelper(attr, left);
+          }
+          if (pit[$(this).val()][attr].indexOf('Mid Auto') >= 0) {
+            pitHelper(attr, mid);
+          }
+          if (pit[$(this).val()][attr].indexOf('Right Auto') >= 0) {
+            pitHelper(attr, right);
+          }
+        }
+      };
+      if (pit[$(this).val()]['cubeLoad'] != undefined && typeof pit[$(this).val()]['cubeLoad'] == 'object') {
+        for (var j = 0; j < pit[$(this).val()]['cubeLoad'].length; j++) {
+          pit[$(this).val()]['cubeLoad'][j] = ' ' + pit[$(this).val()]['cubeLoad'][j];
+        };
+      }
       $('.team-lookup').after(`
         <div class="after-team-lookup">
           <h2 class="lookup-team" style="text-align: center;">` + $(this).val() + `</h2>
@@ -660,6 +573,38 @@ $('.input-team-lookup > input').keydown(function () {
             <button class="btn btn-danger">Average Cubes: ` + teamCubeData[$(this).val()][4] + `</button>
             <button class="btn btn-danger">Average Climb Rate (w/ Levitate): <span class="climb-rate-avg-lev"></span></button>
             <button class="btn btn-danger">Average Climb Rate (w/o Levitate): <span class="climb-rate-avg"></span></button>
+            <button class="btn btn-warning view-pit" data-toggle="modal" data-target="#pit-modal">View Pit Data</button>
+            <div class="modal fade" id="pit-modal" role="dialog" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <h2 style="margin-left: 2vw; margin-top: 2vh;">Pit Data</h2>
+                    <br>
+                    <div class="row">
+                      <div class="col-sm-4">`
+                      + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
+                      + card('Right', right)
+                      + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb'].titleCase()))
+                      + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : pit[$(this).val()]['cubeLoad']))
+                    + `</div>
+                      <div class="col-sm-4">`
+                      + card('Left Auto', left)
+                      + card('Role', pit[$(this).val()]['robotRole'])
+                      + card('Climb Notes', pit[$(this).val()]['climbNotes'])
+                      + card('Language', pit[$(this).val()]['lang'])
+                      + card('Weight', pit[$(this).val()]['weight'])
+                    + `</div>
+                      <div class="col-sm-4">`
+                      + card('Mid Auto', mid)
+                      + card('Role Notes', pit[$(this).val()]['robotRoleNotes'])
+                      + card('Cube Load Method', pit[$(this).val()]['cubeLoadMethod'])
+                      + card('Drive Train', pit[$(this).val()]['driveTrain'])
+                    + `</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <br>
         </div>
@@ -726,10 +671,6 @@ $('.input-team-lookup > input').keydown(function () {
     $('.after-team-lookup').remove();
   }
 });
-
-// Pit Data
-scout.page('Pit Data', [12]);
-pit();
 
 // Rankings
 scout.page('Rankings', [3, 3, 3, 3]);
