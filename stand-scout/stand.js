@@ -2,6 +2,7 @@ window.jQuery = window.$ = require('jquery');
 var Popper = require('popper.js');
 var bootstrap = require('bootstrap');
 var scout = require('scouting');
+const fs = require('fs-extra');
 scout.init('stand', true);
 
 //************************************** Global vars
@@ -18,6 +19,19 @@ var notybluePlatform;
 var notyredPlatform;
 var notygiza;
 var color;
+var time;
+var cycleTime;
+var cycleArray = {
+  'team': parseInt($('.role-team').text()),
+  'scale':[],
+  'blueswitch':[],
+  'redswitch':[],
+  'exchange':[]
+};
+var cycleManifest;
+var cycleData;
+var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
+var names = ["Scale", "Blue Portal 1", "Blue Portal 2", "Red Portal 1", "Red Portal 2", "Blue Switch", "Red Switch", "Blue Exchange", "Red Exchange", "Blue platform", "Red platform", "Cube Zone"]
 // var notyBluePortal1 = new Noty({
 //   type: 'success',
 //   layout: 'center',
@@ -136,7 +150,7 @@ scout.cycle(
     {text: 2, color: 'success'}
   ],
   'switchAuto',
-  true
+  false
 )
 scout.cycle(
   '.cell-auto-4',
@@ -146,16 +160,13 @@ scout.cycle(
     {text: 2, color: 'success'}
   ],
   'scaleAuto',
-  true
+  false
 )
 //************************************** Tele page
 scout.page(
   'Teleop', [12]
 )
 // $(document).ready(function () {
-  //************************************ Arrays for loops
-  var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
-  var names = ["Scale", "Blue Portal 1", "Blue Portal 2", "Red Portal 1", "Red Portal 2", "Blue Switch", "Red Switch", "Blue Exchange", "Red Exchange", "Blue platform", "Red platform", "Giza"]
   //************************************ Loop creating the div's and the buttons
   for (var i = 0; i < buttons.length; i++) {
     $('.cell-teleop-1').append(`
@@ -180,23 +191,60 @@ scout.page(
     }
     else if (buttons[i].indexOf("giza") == 0) {
       if ($('.role-name').text().indexOf("Blue") == 0){
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
       }
       else{
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 17vw; top: 38vh; right: 50vh; width: 6.2vw; font-size: .9vw; height: 3.5vh;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
       }
     }
     else {
       $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale" data-toggle="modal" data-target=".modal-' + buttons[i] + '">Scale</button>')
     }
   }
+  // if ($('.role-name').text().indexOf("Blue") == 0) {
+  //   $('.cell-teleop-1').append(`
+  //     <img src="ArcadeBlue.png" style="width: 80vw; height: 60vh;" usemap="#arcadeblue" class="arcade img-fluid">
+  //     <map name="arcadeblue">
+  //       <area shape="rect" class="blue1" coords="7, 20, 127, 60" data-toggle="modal" data-target=".modal-` + buttons[1] +`">
+  //       <area shape="rect" class="blue2" coords="7, 480, 127, 520" data-toggle="modal" data-target=".modal-` + buttons[2] +`">
+  //       <area shape="rect" class="red1" coords="1020, 20, 1140, 60" data-toggle="modal" data-target=".modal-` + buttons[3] +`">
+  //       <area shape="rect" class="red2" coords="1020, 480, 1140, 520" data-toggle="modal" data-target=".modal-` + buttons[4] +`">
+  //       <area shape="rect" class="blueexchange" coords="1020, 600, 1140, 677" data-toggle="modal" data-target=".modal-` + buttons[7] +`">
+  //       <area shape="rect" class="redexchange" coords="0,401,0,482" data-toggle="modal" data-target=".modal-` + buttons[8] +`">
+  //       <area shape="rect" class="blueplatform" coords="0,267,0,345" data-toggle="modal" data-target=".modal-` + buttons[9] +`">
+  //       <area shape="rect" class="redplatform" coords="0,267,0,345" data-toggle="modal" data-target=".modal-` + buttons[10] +`">
+  //       <area shape="rect" class="blueswitch" coords="0,736,0,813" data-toggle="modal" data-target=".modal-` + buttons[5] +`">
+  //       <area shape="rect" class="redswitch" coords="0,736,0,813" data-toggle="modal" data-target=".modal-` + buttons[6] +`">
+  //       <area shape="rect" class="scale" coords="0, 513, 0, 589" data-toggle="modal" data-target=".modal-` + buttons[0] +` onclick="function(){console.log('hi')}"">
+  //       <area shape="rect" class="gizablue" coords="0,502,0,579" data-toggle="modal" data-target=".modal-` + buttons[11] +`">
+  //     </map>
+  //   `)
+  // }
+  // else{
+  //   $('.cell-teleop-1').append(`
+  //     <img src="ArcadeRed.png" width="80vw" height="60vh" usemap="#arcadered" class="arcade">
+  //     <map name="arcadered">
+  //       <area shape="rect" class="blue1" coords="14,42,256,121" data-toggle="modal" data-target=".modal-` + buttons[1] +`">
+  //       <area shape="rect" class="blue2" coords="14,960,256,1041" data-toggle="modal" data-target=".modal-` + buttons[2] +`">
+  //       <area shape="rect" class="red1" coords="2050,42,2285,121" data-toggle="modal" data-target=".modal-` + buttons[3] +`">
+  //       <area shape="rect" class="red2" coords="2050,960,2285,1041" data-toggle="modal" data-target=".modal-` + buttons[4] +`">
+  //       <area shape="rect" class="blueexchange" coords="2004,600,2274,677" data-toggle="modal" data-target=".modal-` + buttons[7] +`">
+  //       <area shape="rect" class="redexchange" coords="26,401,295,482" data-toggle="modal" data-target=".modal-` + buttons[8] +`">
+  //       <area shape="rect" class="blueplatform" coords="854,267,1102,345" data-toggle="modal" data-target=".modal-` + buttons[9] +`">
+  //       <area shape="rect" class="redplatform" coords="1193,267,1448,345" data-toggle="modal" data-target=".modal-` + buttons[10] +`">
+  //       <area shape="rect" class="blueswitch" coords="635,736,858,813" data-toggle="modal" data-target=".modal-` + buttons[5] +`">
+  //       <area shape="rect" class="redswitch" coords="1445,736,1672,813" data-toggle="modal" data-target=".modal-` + buttons[6] +`">
+  //       <area shape="rect" class="scale" coords="1079, 513, 1214, 589" data-toggle="modal" data-target=".modal-` + buttons[0] +` onclick="function(){console.log('hi')}"">
+  //       <area shape="rect" class="gizared" coords="461,503,679,557" data-toggle="modal" data-target=".modal-` + buttons[11] +`">
+  //     </map>
+  //   `)
+  // }
   //************************************ Tele scouting functions
   scout.cycle(
     '.divscale',
     'Boxes on Scale',
     [
       {text: 1, color: 'success'},
-      {text: 1, color: 'success'}
     ],
     'scale',
     false
@@ -234,17 +282,17 @@ scout.page(
       '.divbluePlatform',
       'Climbing',
       [{
-        text: 'Climbed Front',
+        text: 'Front',
         color: 'info',
         value: 'climbFront'
       },
       {
-        text: 'Climbed Side',
+        text: 'Side',
         color: 'info',
         value: 'climbSide'
       },
       {
-        text: 'Assisted Climb',
+        text: 'Assisted',
         color: 'info',
         value: 'assist'
       },
@@ -306,17 +354,17 @@ scout.page(
       '.divredPlatform',
       'Climbing',
       [{
-        text: 'Climbed Front',
+        text: 'Front',
         color: 'danger',
         value: 'climbFront'
       },
       {
-        text: 'Climbed Side',
+        text: 'Side',
         color: 'danger',
         value: 'climbSide'
       },
       {
-        text: 'Assisted Climb',
+        text: 'Climb',
         color: 'danger',
         value: 'assist'
       },
@@ -376,8 +424,60 @@ scout.page(
 for (var i = 0; i < buttons.length; i++) {
   if ($('.div' + buttons[i]).html() == '') {
       $('.div' + buttons[i]).append('<span>Sorry, This Robot is Useless Here</span>')
-    }
   }
+}
+$(document).ready(function(){
+  $('.cycle-submit-14, .cycle-submit-15, .cycle-submit-10, .cycle-submit-13, .cycle-submit-9, .btn-12-1').click(function(){
+    time = new Date().getTime()
+  })
+  $('.btn-12-2, .cycle-submit-8, .cycle-submit-7, .cycle-submit-6').click(function () {
+    var currentTime = new Date().getTime()
+    cycleTime = currentTime - time
+    for (var i = 0; i < 20; i++) {
+      if ($(this).hasClass('cycle-submit-' + i)) {
+        if (i == 6) {
+          i = 0
+          cycleArray['scale'][i] = cycleTime
+          i++
+        }
+        else if(i == 7) {
+          var r = 0
+          cycleArray['redswitch'][r] = cycleTime
+          r++
+        }
+        else if(i == 8) {
+          var s = 0
+          cycleArray['blueswitch'][s] = cycleTime
+          s++
+        }
+      }
+      else if ($(this).hasClass('btn-12-2')) {
+        var t = 0
+        cycleArray['exchange'][t] = cycleTime
+        t++
+      }
+    }
+    if (!fs.existsSync('cycle/')) {
+      fs.mkdirSync('cycle/')
+    }
+    if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json')) {
+      console.log(cycleArray);
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
+    }
+    if (fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json')) {
+      console.log(cycleArray);
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
+    }
+    if (!fs.existsSync('cycle/manifest.json')) {
+      fs.writeFileSync('cycle/manifest.json', '[]')
+    }
+    cycleManifest = JSON.parse(fs.readFileSync('cycle/manifest.json', 'utf8'))
+    for (var i = 0; i < cycleManifest.length; i++) {
+      cycleData.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i] + '.json', 'utf-8')));
+    }
+  })
+})
+//14, 15 are color based 10, 9, 13, exchange
 // })
 //should I seperate portals?
 //Defense

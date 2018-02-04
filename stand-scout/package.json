@@ -13,6 +13,7 @@
     "electron": "^1.7.10"
   },
   "dependencies": {
+    "fs-extra": "^5.0.0",
     "scouting": "^2.0.6"
   }
 }
