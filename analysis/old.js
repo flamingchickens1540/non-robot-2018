@@ -345,3 +345,144 @@ function pit() {
     `);
   };
 };
+//
+//
+//
+function analyzeRank() {
+  var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+  var switchers = [];
+  var scalers = [];
+  var exchangers = [];
+  var defenders = [];
+  var rankings = {};
+  for (var team in tags) {
+    if (tags.hasOwnProperty(team)) {
+      for (var i = 0; i < tags[team].length; i++) {
+        if (tags[team][i] == 'Switcher') {
+          switchers.push(team);
+        }
+        if (tags[team][i] == 'Scaler') {
+          scalers.push(team);
+        }
+        if (tags[team][i] == 'Exchanger') {
+          exchangers.push(team);
+        }
+        if (tags[team][i] == 'Defender') {
+          defenders.push(team);
+        }
+      };
+    }
+  };
+  rankings.switch = rankHelper(switchers, 'switch');
+  rankings.scale = rankHelper(scalers, 'scale');
+  rankings.exchange = rankHelper(exchangers, 'exchange');
+  rankings.defense = rankHelper(defenders, 'oswitch');
+  fs.writeFileSync('export/rankings.json', JSON.stringify(rankings));
+  return rankings;
+};
+function rankHelper(a, b, c, d) {
+  var b = {};
+  var c = [];
+  var cubes = JSON.parse(fs.readFileSync('resources/team-cube-data.json', 'utf8'));
+  var previous;
+  var ties = {};
+  var avgCycleTime = {};
+  for (var i = 0; i < a.length; i++) {
+    for (var teamData in cycle) {
+      if (cycle.hasOwnProperty(teamData)) {
+        if (cycle[teamData].team == a[i]) {
+          b[a[i]] = [cycle[teamData][d]];
+        }
+      }
+    };
+  };
+  for (var teamNum in b) {
+    if (b.hasOwnProperty(teamNum)) {
+      for (var i = 0; i < b[teamNum].length; i++) {
+        avgCycleTime[teamNum] = avgCycleTime[teamNum] == undefined ? 0 : avgCycleTime[teamNum];
+        avgCycleTime[teamNum] += b[teamNum][0][i];
+      };
+      avgCycleTime[teamNum] /= b[teamNum][0].length;
+      c.push(avgCycleTime[teamNum]);
+    }
+  };
+  c.sort(function(a, b) {return a - b});
+  for (var teamNum in avgCycleTime) {
+    if (avgCycleTime.hasOwnProperty(teamNum)) {
+      if (previous != undefined && avgCycleTime[teamNum] == avgCycleTime[previous]) {
+        ties[avgCycleTime[teamNum]] = typeof ties[avgCycleTime[teamNum]] != 'object' ? [] : ties[avgCycleTime[teamNum]];
+        ties.push(teamNum, previous);
+      }
+      previous = teamNum;
+    }
+  };
+  for (var i = 0; i < c.length; i++) {
+    for (var teamNum in b) {
+      if (b.hasOwnProperty(teamNum)) {
+        if (c[i] == avgCycleTime[teamNum]) {
+          b[teamNum][1] = i + 1;
+        }
+      }
+    };
+  };
+  if (Object.keys(ties).length > 0) {
+    for (var cubeNum in ties) {
+      if (ties.hasOwnProperty(cubeNum)) {
+        for (var i = 0; i < ties[cubeNum].length; i++) {
+          if (ties[cubeNum][i + 1] != undefined) {
+            if (cubes[ties[cubeNum][i]][4] > cubes[ties[cubeNum][i + 1]][4]) {
+              b[ties[cubeNum][i]][1]--;
+            } else {
+              b[ties[cubeNum][i + 1]][1]--;
+            }
+          }
+        };
+      }
+    };
+  }
+  return b;
+};
+//
+//
+//
+
+function displayRank(a, b) {
+  var rankedTeam = 0;
+  previousTeamRank.switch = 0;
+  previousTeamRank.scale = 0;
+  previousTeamRank.exchange = 0;
+  previousTeamRank.defense = 0;
+  $('.cell-rankings-' + b).html(`
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Team</th>
+        </tr>
+      </thead>
+      <tbody class="team-rank-table-` + a + `"></tbody>
+    </table>
+  `);
+  for (var teamNum in rankings[a]) {
+    if (rankings[a].hasOwnProperty(teamNum)) {
+      previousTeamRank[a]++;
+      if (previousTeamRank[a] != rankings[a][teamNum][1]) {
+        for (var i = 0; i < totTeams.length; i++) {
+          if (rankings[a][totTeams[i]][1] == previousTeamRank[a]) {
+            rankedTeam = totTeams[i];
+            break;
+          } else {
+            rankedTeam = 0;
+          }
+        };
+      }
+      $('.team-rank-table-' + a).append(`
+        <tr class="btn-rank-team rank-` + a + `-` + (rankedTeam == '0' ? teamNum : rankedTeam) + `">
+          <td class="` + a + `-rank">` + rankings[a][rankedTeam == '0' ? teamNum : rankedTeam][1] + `</td>
+          <td class="` + a + `-team btn-team">` + (rankedTeam == '0' ? teamNum : rankedTeam) + `</td>
+        </tr>
+      `);
+    }
+  };
+  return a;
+};
