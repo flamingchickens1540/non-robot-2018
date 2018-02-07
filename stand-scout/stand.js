@@ -28,6 +28,7 @@ var cycleArray = {
   'redswitch':[],
   'exchange':[]
 };
+var quotes = JSON.parse(fs.readFileSync('quotes.json'))
 var cycleManifest;
 var cycleData;
 var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
@@ -427,6 +428,13 @@ for (var i = 0; i < buttons.length; i++) {
   }
 }
 $(document).ready(function(){
+  var rando = Math.ceil(Math.random()*1640)
+  var quoteText = quotes[rando]['quoteText']
+  var quoteAuthor = quotes[rando]['quoteAuthor'] == '' ? 'Unknown' : quotes[rando]['quoteAuthor'];
+  console.log(quoteText, quoteAuthor);
+  $('.cell-login-2').append(`<br><br><br><br><br><div class='quote' style='text-align: center;'>` +
+  quoteText + `<br>~ ` + quoteAuthor +
+  `</div>`)
   if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json')) {
     fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
   }
@@ -440,8 +448,10 @@ $(document).ready(function(){
     var currentTime = new Date().getTime()
     cycleTime = currentTime - time
     if ($(this).hasClass('btn-12-2')) {
-      var m = cycleArray['exchange'].length
-      cycleArray['exchange'][m] = cycleTime
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var n = cycleJSON['exchange'].length
+      cycleJSON['exchange'][n] = cycleTime
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
     }
     for (var i = 5; i < 10; i++) {
       if ($(this).hasClass('cycle-submit-' + i)) {
@@ -452,12 +462,16 @@ $(document).ready(function(){
           fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
         }
         else if(i == 7) {
-          var m = cycleArray['redswitch'].length
-          cycleArray['redswitch'][m] = cycleTime
+          var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+          var n = cycleJSON['redswitch'].length
+          cycleJSON['redswitch'][n] = cycleTime
+          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
         }
         else if(i == 8) {
-          var m = cycleArray['blueswitch'].length
-          cycleArray['blueswitch'][m] = cycleTime
+          var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+          var n = cycleJSON['blueswitch'].length
+          cycleJSON['blueswitch'][n] = cycleTime
+          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
         }
       }
     }
