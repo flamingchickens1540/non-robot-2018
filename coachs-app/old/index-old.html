@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="node_modules/noty/lib/noty.css">
+    <link rel="stylesheet" href="style.css">
+    <title></title>
+  </head>
+  <body>
+
+    <!-- these buttons go under the home screen -->
+    <button id = "match" value = "match" class = "btn btn-primary homeButton"> Start </button>
+    <button id = "route scout" value = "route scout" class = "btn btn-primary homeButton"> Start </button>
+    <button id = "teamLookUp" value = "teams" class = "btn btn-primary homeButton"> Start </button>
+
+    <!-- when match is hit goes to match page, asks what number match, loads buttons that are "notes", "teams", "quick stats"-->
+    <!--use this class form the next buttons? btn-start-next  -->
+    <button id = "teams" value = "teams" class = "btn btn-primary matchButton "> Start </button>
+    <button id = "The Plan" value = "notes" class = "btn btn-primary matchButton"> Start </button>
+    <button id = "quickStats" value = "quickStats" class = "btn btn-primary matchButton"> Start </button>
+
+    <div class = "nPage">
+
+
+    </div>
+
+    <script>
+      window.jQuery = window.$ = require('jquery');
+      var Popper = require('popper.js');
+    </script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="node_modules/noty/lib/noty.js"></script>
+    <script src="script.js" charset="utf-8"></script>
+  </body>
+</html>

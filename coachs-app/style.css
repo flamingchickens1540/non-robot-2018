@@ -1,0 +1,12 @@
+body{
+  overflow: hidden;
+}
+.btn-1-1, .btn-2-1, .btn-3-1, .btn-4-1{
+  font-size: 36pt;
+  border-radius: 0;
+  padding: 25px;
+}
+.scout-mc{
+  font-size: 24pt;
+  border-radius: 0;
+}

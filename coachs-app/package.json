@@ -1,0 +1,19 @@
+{
+  "name": "coachs-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^1.4.14"
+  },
+  "author": "Tristan Peng",
+  "license": "ISC",
+  "dependencies": {
+    "font-awesome": "^4.7.0",
+    "scouting": "^2.0.0"
+  }
+}
