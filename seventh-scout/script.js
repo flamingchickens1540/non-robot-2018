@@ -70,5 +70,7 @@ scout.radio(
   undefined,
   true
 );
+require("jquery")(".cell-match-2").append("<br>");
+scout.textarea(".cell-match-2","Notes (optional):","","notes");
 scout.bluetooth();
 scout.done(".cell-match-1",true);
