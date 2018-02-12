@@ -165,3 +165,4 @@ $(document).ready(function () {
 scout.page('Photo and Finish', [12]);
 scout.text('.cell-photo-and-finish-1', 'Remember to take a 📸 of the 🤖!', 72);
 scout.done('.cell-photo-and-finish-1', true);
+scout.bluetooth()

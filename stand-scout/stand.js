@@ -573,4 +573,5 @@ scout.done(
   '.cell-endgame-3',
   false
 )
+scout.bluetooth()
 //make buttons do stuff, create endgame page
