@@ -86,44 +86,6 @@ function card(a, b) {
     <br>
   `);
 };
-function match() {
-  var temp = [0, 0, 0, 0, 0, 0];
-  var index = 0;
-  prediction = [0, 0];
-  scout.radio('.cell-match-preview-2-1', '', [{text: sched[matches[matchNum]][0], color: 'danger', class: 'btn-teams'}], 'asdf', false);
-  scout.radio('.cell-match-preview-2-1', '', [{text: sched[matches[matchNum]][1], color: 'danger', class: 'btn-teams'}], 'asdf', false);
-  scout.radio('.cell-match-preview-2-1', '', [{text: sched[matches[matchNum]][2], color: 'danger', class: 'btn-teams'}], 'asdf', false);
-  scout.radio('.cell-match-preview-2-3', '', [{text: sched[matches[matchNum]][3], color: 'primary', class: 'btn-teams'}], 'asdf', false);
-  scout.radio('.cell-match-preview-2-3', '', [{text: sched[matches[matchNum]][4], color: 'primary', class: 'btn-teams'}], 'asdf', false);
-  scout.radio('.cell-match-preview-2-3', '', [{text: sched[matches[matchNum]][5], color: 'primary', class: 'btn-teams'}], 'asdf', false);
-  for (var i = 0; i < sched[matches[matchNum]].length; i++) {
-    for (var attr in teamAvg[sched[matches[matchNum]][i]]) {
-      if (teamAvg[sched[matches[matchNum]][i]].hasOwnProperty(attr)) {
-        temp[i] += parseInt(teamAvg[sched[matches[matchNum]][i]][attr]);
-        index++;
-      }
-    };
-    if (teamAvg[sched[matches[matchNum]][i]] != undefined) {
-      temp[i] /= Object.keys(teamAvg[sched[matches[matchNum]][i]]).length;
-    }
-  };
-  for (var i = 0; i < temp.length; i++) {
-    if (i < 3) {
-      if (temp[i] != 0) {
-        prediction[0] += Math.floor(135 / temp[i]) - 1;
-      }
-    } else {
-      if (temp[i] != 0) {
-        prediction[1] += Math.floor(135 / temp[i]) - 1;
-      }
-    }
-  };
-  for (var i = 0; i < prediction.length; i++) {
-    prediction[i] = ' ' + prediction[i];
-  }
-  scout.text('.cell-match-preview-2-2', 'Predicted Cube Count:<br>' + prediction, '24');
-};
-
 // Home Page
 scout.page('Home', [6, 6]);
 scout.checkbox('.cell-home-1', '', [{text: 'Match Preview', color: 'primary', class: 'btn-match-preview'}], 'asdf', false);
@@ -143,43 +105,24 @@ $('.btn-team-lookup').click(function () {
 
 // Match Preview
 scout.page('Match Preview', [12]);
-scout.checkbox('.cell-match-preview-1', '', [{text: 'Next Match: ' + matchNum, color: 'warning', class: 'btn-match'}], 'asdf', false);
+scout.input('.cell-match-preview-1', '', 'Match Number', 'asdf', 'match-lookup');
 $(document).ready(function () {
-  $('.body-div-match-preview > h1, .body-div-match-preview > br, .body-div-match-preview > hr').remove();
-  $('.row-match-preview').after(`
-    <div class="row row-match-preview-2">
-      <div class="col-sm-4 cell-match-preview-2-1"></div>
-      <div class="col-sm-4 cell-match-preview-2-2"></div>
-      <div class="col-sm-4 cell-match-preview-2-3"></div>
-      <div class="col-sm-12 no-match"></div>
-    </div>
-  `);
-  $('.btn-match').click(function () {
-    if (!$(this).hasClass('active')) {
-      $(this).text('Current Match: ' + (typeof matchNum == 'string' ? 'No Matches Left' : matches[matchNum]));
-    } else {
-      matchNum = (matchNum + 1 >= matches.length) || (typeof matchNum == 'string') ? '' : matchNum + 1;
-      $(this).text('Next Match: ' + (typeof matchNum == 'string' ? 'No Matches Left' : matches[matchNum]));
-      $('.cell-match-preview-2-1, .cell-match-preview-2-2, .cell-match-preview-2-3').empty();
-      try {
-        match();
-      } catch (e) {
-        if (noMatch) {
-          scout.text('.no-match', 'No Matches Left', 48);
-          noMatch = false;
+  $('.match-lookup').keydown(function () {
+    if (event.keyCode == 13) {
+      $('.cell-match-preview-1').html(`
+        <table class="table table-hover">
+          <thead>
+            <tr class="mp-teams"></tr>
+          </thead>
+          <tbody class="team-attr"></tbody>
+        </table>
+      `);
+      for (var i in sched[$(this).val()]) {
+        if (sched[$(this).val()].hasOwnProperty(i)) {
+          console.log(i);
         }
-      }
+      };
     }
-  });
-  match();
-  $('.btn-teams').click(function () {
-    var teamNum = $(this).text();
-    $('.page-pane').fadeOut(250, function () {
-      $('.body-div-team-lookup').show();
-      $('.input-team-lookup > input')
-        .val(teamNum)
-        .focus();
-    });
   });
 });
 
