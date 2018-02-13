@@ -264,14 +264,14 @@ function displayRank(a, b) {
           <th>Team</th>
         </tr>
       </thead>
-      <tbody class="` + a + `-tbody"></tbody>
+      <tbody class="` + a + `-tbody-1"></tbody>
     </table>
   `);
   for (var i = 0; i < totTeams.length; i++) {
     for (var team in rankings) {
       if (rankings.hasOwnProperty(team)) {
         if (rankings[team][a] != undefined && rankings[team][a][0] == i + 1) {
-          $('.' + a + '-tbody').append(`
+          $('.' + a + '-tbody-1').append(`
             <tr>
               <td>` + (i + 1) + `</td>
               <td>` + team + `</td>
