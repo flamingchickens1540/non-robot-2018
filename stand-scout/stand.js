@@ -1,4 +1,5 @@
 window.jQuery = window.$ = require('jquery');
+var noty = require('noty');
 var Popper = require('popper.js');
 var bootstrap = require('bootstrap');
 var scout = require('scouting');
@@ -33,6 +34,20 @@ var cycleManifest;
 var cycleData;
 var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
 var names = ["Scale", "Blue Portal 1", "Blue Portal 2", "Red Portal 1", "Red Portal 2", "Blue Switch", "Red Switch", "Blue Exchange", "Red Exchange", "Blue platform", "Red platform", "Cube Zone"]
+var successNoty = new noty({
+  text: "Action Recorded!",
+  layout: "topRight",
+  timeout: 1000,
+  progressBar: true,
+  type: "success"
+});
+var autoNoty = new noty({
+  text: "Select value for cross line",
+  layout: "topRight",
+  timeout: 5000,
+  progressBar: true,
+  type: "danger"
+});
 // var notyBluePortal1 = new Noty({
 //   type: 'success',
 //   layout: 'center',
@@ -109,59 +124,36 @@ scout.login(
 )
 //*************************************** Auto page
 scout.page(
-  'Auto', [4, 2, 3, 3]
+  'Auto', [4, 4, 4]
 )
 scout.radio(
   '.cell-auto-1',
-  'Where did the robot start (From Human Player in Exchange Perspective)',
-  [{
-    text: 'Left side ',
-    color: 'warning',
-    value: 'left'
-  },
-  {
-    text: 'Center ',
-    color: 'warning',
-    value: 'center'
-  },
-  {
-    text: 'Right side ',
-    color: 'warning',
-    value: 'right'
-  }],
-  'start'
-);
-scout.checkbox(
-  '.cell-auto-2',
   'Cross Line?',
   [
     {
-      text: 'Crossed Line',
-      color: 'info',
+      text: 'Yes',
+      color: 'success',
       value: 'Line'
+    },
+    {
+      text: 'No',
+      color: 'danger',
+      value: 'noline'
     }
   ],
   'crossLine'
 );
-scout.cycle(
-  '.cell-auto-3',
+scout.counter(
+  '.cell-auto-2',
   'Boxes on switch',
-  [
-    {text: 1, color: 'success'},
-    {text: 2, color: 'success'}
-  ],
-  'switchAuto',
-  false
+  1,
+  'switchAuto'
 )
-scout.cycle(
-  '.cell-auto-4',
+scout.counter(
+  '.cell-auto-3',
   'Boxes on Scale',
-  [
-    {text: 1, color: 'success'},
-    {text: 2, color: 'success'}
-  ],
-  'scaleAuto',
-  false
+  1,
+  'scaleAuto'
 )
 //************************************** Tele page
 scout.page(
@@ -171,7 +163,7 @@ scout.page(
   //************************************ Loop creating the div's and the buttons
   for (var i = 0; i < buttons.length; i++) {
     $('.cell-teleop-1').append(`
-      <div class='modal fade modal-` + buttons[i] + `' role='dialog'>
+      <div class='modal fade modal-` + buttons[i] + `' role='dialog'data-backdrop='static' >
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header" style="text-align:center;">
@@ -179,6 +171,9 @@ scout.page(
             </div>
             <div class="modal-body">
               <div class='div` + buttons[i] + `'></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn-small button-submit-` + i + ` button-submit"data-toggle="modal" data-target=".modal-` + buttons[i] + `"> Confirm </button>
             </div>
           </div>
         </div>
@@ -241,74 +236,43 @@ scout.page(
   //   `)
   // }
   //************************************ Tele scouting functions
-  scout.cycle(
+  scout.counter(
     '.divscale',
     'Boxes on Scale',
-    [
-      {text: 1, color: 'success'},
-    ],
-    'scale',
-    false
+    1,
+    'scale'
   )
-  scout.cycle(
+  scout.counter(
     '.divredSwitch',
     'Boxes on Red Switch',
-    [{text: 1, color: 'danger'}],
-    'redSwitch',
-    false
+    1,
+    'redSwitch'
   )
-  scout.cycle(
+  scout.counter(
     '.divblueSwitch',
     'Boxes on Blue Switch',
-    [{text: 1, color: 'info'}],
-    'blueSwitch',
-    false
+    1,
+    'blueSwitch'
   )
-  scout.cycle(
+  scout.counter(
     '.divredPlatform',
     'Boxes taken from red platform',
-    [{text: 1, color: 'danger'}],
-    'redPlatformCube',
-    false
+    1,
+    'redPlatformCube'
   )
-  scout.cycle(
+  scout.counter(
     '.divbluePlatform',
     'Boxes taken from blue platform',
-    [{text: 1, color: 'info'}],
-    'bluePlatformCube',
-    false
+    1,
+    'bluePlatformCube'
+  )
+  scout.counter(
+    '.divgiza',
+    'Boxes taken from the Pyramid',
+    1,
+    'pyramid',
   )
   if ($('.role-name').text().indexOf("Blue") == 0){
-    scout.radio(
-      '.divbluePlatform',
-      'Climbing',
-      [{
-        text: 'Front',
-        color: 'info',
-        value: 'climbFront'
-      },
-      {
-        text: 'Side',
-        color: 'info',
-        value: 'climbSide'
-      },
-      {
-        text: 'Assisted',
-        color: 'info',
-        value: 'assist'
-      },
-      {
-        text: 'Levitate',
-        color: 'info',
-        value: 'levitate'
-      },
-      {
-        text: 'Parking',
-        color: 'info',
-        value: 'parking'
-      }],
-      'start'
-    );
     $('.divbluePlatform .bg-9').removeClass('btn-group')
     $('.divbluePlatform .scout-mc').after('')
     scout.checkbox(
@@ -328,59 +292,20 @@ scout.page(
       ],
       'blueExchange'
     );
-    scout.cycle(
-      '.divgiza',
-      'Boxes taken from the Pyramid',
-      [{text: 1, color: 'info'}],
-      'pyramid',
-      false
-    )
-    scout.cycle(
+    scout.counter(
       '.divbluePortal1',
       'Boxes taken from portal',
-      [{text: 1, color: 'info'}],
-      'bluePortal',
-      false
+      1,
+      'bluePortal'
     )
-    scout.cycle(
+    scout.counter(
       '.divbluePortal2',
       'Boxes taken from portal',
-      [{text: 1, color: 'info'}],
-      'bluePortal',
-      false
+      1,
+      'bluePortal'
     )
   }
   else{
-    scout.radio(
-      '.divredPlatform',
-      'Climbing',
-      [{
-        text: 'Front',
-        color: 'danger',
-        value: 'climbFront'
-      },
-      {
-        text: 'Side',
-        color: 'danger',
-        value: 'climbSide'
-      },
-      {
-        text: 'Climb',
-        color: 'danger',
-        value: 'assist'
-      },
-      {
-        text: 'Levitate',
-        color: 'danger',
-        value: 'levitate'
-      },
-      {
-        text: 'Parking',
-        color: 'danger',
-        value: 'parking'
-      }],
-      'start'
-    );
     $('.divredPlatform .bg-9').removeClass('btn-group')
     $('.divredPlatform .scout-mc').after('')
     scout.checkbox(
@@ -400,26 +325,17 @@ scout.page(
       ],
       'redExchange'
     );
-    scout.cycle(
-      '.divgiza',
-      'Boxes taken from the Pyramid',
-      [{text: 1, color: 'danger'}],
-      'pyramid',
-      false
-    )
-    scout.cycle(
+    scout.counter(
       '.divredPortal1',
       'Boxes taken from portal',
-      [{text: 1, color: 'danger'}],
-      'redPortal',
-      false
+      1,
+      'redPortal'
     )
-    scout.cycle(
+    scout.counter(
       '.divredPortal2',
       'Boxes taken from portal',
-      [{text: 1, color: 'danger'}],
-      'redPortal',
-      false
+      1,
+      'redPortal'
     )
 }
 for (var i = 0; i < buttons.length; i++) {
@@ -428,53 +344,74 @@ for (var i = 0; i < buttons.length; i++) {
   }
 }
 $(document).ready(function(){
+  //rando helpful things - adding quotes
   var rando = Math.ceil(Math.random()*1640)
   var quoteText = quotes[rando]['quoteText']
   var quoteAuthor = quotes[rando]['quoteAuthor'] == '' ? 'Unknown' : quotes[rando]['quoteAuthor'];
-  console.log(quoteText, quoteAuthor);
   $('.cell-login-2').append(`<br><br><br><br><br><div class='quote' style='text-align: center;'>` +
   quoteText + `<br>~ ` + quoteAuthor +
   `</div>`)
-  if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json')) {
+  //displaying noty onclick
+  $('.button-submit').click(function(){
+    successNoty.show();
+  })
+  //Displaying Auto noty
+  $('.btn-next').click(function(){
+    if ($('.cell-auto-1').is(':visible') == true) {
+      if (!($('.btn-2-1').hasClass('active')) && !($('.btn-2-2').hasClass('active'))) {
+        autoNoty.show()
+        alert('Please Select an Cross Line Value')
+      }
+    }
+  })
+  //working on cycle times and saving cycle times
+  if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json') == true) {
     fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
   }
-  $('.cycle-submit-14, .cycle-submit-15, .cycle-submit-10, .cycle-submit-13, .cycle-submit-9, .btn-12-1').click(function(){
+  $('.button-submit-3, .button-submit-4, .button-submit-9, .button-submit-10, .button-submit-11, .btn-11-1').click(function(){
     time = new Date().getTime()
   })
-  $('.btn-12-2, .cycle-submit-8, .cycle-submit-7, .cycle-submit-6').click(function () {
+  $('.btn-11-2, .button-submit-0, .button-submit-5, .button-submit-6').click(function () {
     if (!fs.existsSync('cycle/')) {
       fs.mkdirSync('cycle/')
     }
     var currentTime = new Date().getTime()
     cycleTime = currentTime - time
-    if ($(this).hasClass('btn-12-2')) {
+    console.log(cycleTime);
+    if ($(this).hasClass('btn-11-2')) {
       var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
       var n = cycleJSON['exchange'].length
       cycleJSON['exchange'][n] = cycleTime
       fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
+      time = 0
     }
-    for (var i = 5; i < 10; i++) {
-      if ($(this).hasClass('cycle-submit-' + i)) {
-        if (i == 6) {
+    //figuring out the location of the cycle drop
+    for (var i = 0; i < 7; i++) {
+      if ($(this).hasClass('button-submit-' + i)) {
+        if (i == 0) {
           var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
           var n = cycleJSON['scale'].length
           cycleJSON['scale'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
+          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+          time = 0
         }
-        else if(i == 7) {
+        else if(i == 6) {
           var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
           var n = cycleJSON['redswitch'].length
           cycleJSON['redswitch'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
+          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+          time = 0
         }
-        else if(i == 8) {
+         else if(i == 5) {
           var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
           var n = cycleJSON['blueswitch'].length
           cycleJSON['blueswitch'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
+          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+          time = 0
         }
       }
     }
+    //saving the cycle time
     if (!fs.existsSync('cycle/manifest.json')) {
       fs.writeFileSync('cycle/manifest.json', '[]')
     }
@@ -555,22 +492,55 @@ $(document).ready(function(){
   // });
 //************************************** Climb/endgame page
 scout.page(
-  'Endgame', [5,6,1]
+  'Climb', [6,6]
 )
+scout.radio(
+  '.cell-climb-1',
+  'Climbing',
+  [{
+    text: 'Front',
+    color: 'danger',
+    value: 'climbFront'
+  },
+  {
+    text: 'Side',
+    color: 'info',
+    value: 'climbSide'
+  },
+  {
+    text: 'Assisted',
+    color: 'success',
+    value: 'assist'
+  },
+  {
+    text: 'Levitate',
+    color: 'info',
+    value: 'levitate'
+  },
+  {
+    text: 'Parking',
+    color: 'danger',
+    value: 'parking'
+  }],
+  'start'
+);
 scout.textarea(
-  '.cell-endgame-1',
+  '.cell-climb-2',
   'Climbing notes',
   "This robot's climbing system was...",
   'climbNotes'
 )
+scout.page(
+  'Endgame', [11,1]
+)
 scout.textarea(
-  '.cell-endgame-2',
+  '.cell-endgame-1',
   'Overall notes',
   'This robot overall was...',
   'notes'
 )
 scout.done(
-  '.cell-endgame-3',
+  '.cell-endgame-2',
   false
 )
-//make buttons do stuff, create endgame page
+//Counter vs Cycle (Confirm with Tristan),
