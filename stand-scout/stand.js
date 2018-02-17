@@ -544,3 +544,4 @@ scout.done(
   false
 )
 //Counter vs Cycle (Confirm with Tristan),
+//make buttons do stuff, create endgame page
