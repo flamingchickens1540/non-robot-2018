@@ -1,5 +1,5 @@
 body{
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .btn-1-1, .btn-2-1, .btn-3-1, .btn-4-1{
   font-size: 36pt;
