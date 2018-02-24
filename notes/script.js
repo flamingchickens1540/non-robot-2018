@@ -1,15 +1,21 @@
 window.jQuery = window.$ = require('jquery');
 var scout = require('scouting');
+const fs = require('fs');
 var textareaCount = 0;
 var isShift;
-scout.init('blank');
+var sched = JSON.parse(fs.readFileSync('scouting/schedule.json', 'utf8'));
+if (!fs.existsSync('scouting/matchNum.txt')) {
+  fs.writeFileSync('scouting/matchNum.txt', 1);
+}
+var matchNum = JSON.parse(fs.readFileSync('scouting/matchNum.txt', 'utf8'));
+scout.init('blank', true);
 scout.page('Match Notes', [6, 6]);
-scout.textarea('.cell-match-notes-1', 'Red Auto', 'Type here...', 'redAuto');
-scout.textarea('.cell-match-notes-1', 'Red Teleop', 'Type here...', 'redTeleop');
-scout.textarea('.cell-match-notes-1', 'Red Endgame', 'Type here...', 'redEndgame');
-scout.textarea('.cell-match-notes-2', 'Blue Auto', 'Type here...', 'blueAuto');
-scout.textarea('.cell-match-notes-2', 'Blue Teleop', 'Type here...', 'blueTeleop');
-scout.textarea('.cell-match-notes-2', 'Blue Endgame', 'Type here...', 'blueEndgame');
+scout.textarea('.cell-match-notes-1', 'Red 1: ' + sched[matchNum][0], 'Type here...', sched[matchNum][0]);
+scout.textarea('.cell-match-notes-1', 'Red 2: ' + sched[matchNum][1], 'Type here...', sched[matchNum][1]);
+scout.textarea('.cell-match-notes-1', 'Red 3: ' + sched[matchNum][2], 'Type here...', sched[matchNum][2]);
+scout.textarea('.cell-match-notes-2', 'Blue 1: ' + sched[matchNum][3], 'Type here...', sched[matchNum][3]);
+scout.textarea('.cell-match-notes-2', 'Blue 2: ' + sched[matchNum][4], 'Type here...', sched[matchNum][4]);
+scout.textarea('.cell-match-notes-2', 'Blue 3: ' + sched[matchNum][5], 'Type here...', sched[matchNum][5]);
 scout.done('.cell-match-notes-1', false);
 
 $('.scout-t')
@@ -48,3 +54,17 @@ $('.scout-t')
       }
     }
   });
+
+$(document).ready(function () {
+  setTimeout(function () {
+    $('.filename')
+      .val(matchNum)
+      .focus();
+  }, 100);
+  $('.btn-done')
+    .off('click')
+    .click(function () {
+      fs.writeFileSync('scouting/matchNum.txt', parseInt(matchNum) + 1);
+      window.location.reload();
+    });
+});
