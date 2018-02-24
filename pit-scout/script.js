@@ -20,59 +20,84 @@ scout.radio('.cell-phone-number-1', '',
 
 // Auto
 scout.page('Auto', [4, 4, 4]);
-scout.checkbox('.cell-auto-1', 'Left Switch',
+scout.radio('.cell-auto-1', 'Switch',
   [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
-  ], 'leftSwitchAuto', true);
-scout.checkbox('.cell-auto-2', 'Right Switch',
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
+  ], 'switchAuto', true);
+scout.radio('.cell-auto-2', 'Scale',
   [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
-  ], 'rightSwitchAuto', true);
-scout.checkbox('.cell-auto-3', 'Left Scale',
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
+  ], 'scaleAuto', true);
+scout.radio('.cell-auto-3', 'Exchange',
   [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
-  ], 'leftScaleAuto', true);
-scout.checkbox('.cell-auto-1', 'Right Scale',
-  [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
-  ], 'rightScaleAuto', true);
-scout.checkbox('.cell-auto-2', '2 Cube Auto',
-  [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
-  ], 'twoCubeAuto', true);
-scout.checkbox('.cell-auto-3', 'Exchange Station',
-  [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
   ], 'exchangeAuto', true);
-scout.checkbox('.cell-auto-2', 'Cross Line',
+scout.radio('.cell-auto-1', 'Two Cube',
   [
-    {text: 'Left Auto'},
-    {text: 'Mid Auto'},
-    {text: 'Right Auto'},
-    {text: 'Nope', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
+  ], 'twoCubeAuto', true);
+scout.radio('.cell-auto-3', 'Cross Line',
+  [
+    {text: '👍', color: 'success', value: true},
+    {text: '👎', color: 'danger', value: false}
   ], 'lineAuto', true);
+// scout.checkbox('.cell-auto-1', 'Left Switch',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'leftSwitchAuto', true);
+// scout.checkbox('.cell-auto-2', 'Right Switch',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'rightSwitchAuto', true);
+// scout.checkbox('.cell-auto-3', 'Left Scale',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'leftScaleAuto', true);
+// scout.checkbox('.cell-auto-1', 'Right Scale',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'rightScaleAuto', true);
+// scout.checkbox('.cell-auto-2', '2 Cube Auto',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'twoCubeAuto', true);
+// scout.checkbox('.cell-auto-3', 'Exchange Station',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'exchangeAuto', true);
+// scout.checkbox('.cell-auto-2', 'Cross Line',
+//   [
+//     {text: 'Left Auto'},
+//     {text: 'Mid Auto'},
+//     {text: 'Right Auto'},
+//     {text: 'Nope', color: 'danger', value: false}
+//   ], 'lineAuto', true);
 
 // Teleop
 scout.page('Tele-Op', [4, 5, 3]);
-scout.radio('.cell-tele-op-1', 'Preferred Robot Role',
+scout.checkbox('.cell-tele-op-1', 'Preferred Robot Role',
   [
     {text: 'Switching', color: 'info'},
     {text: 'Scaling', color: 'info'},
@@ -86,27 +111,27 @@ scout.radio('.cell-tele-op-2', 'Climb',
     {text: 'Solo', color: 'warning', value: 'self'},
     {text: 'Nope', color: 'danger', value: false, class: 'no-climb'}
   ], 'climb', true);
-scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
-  [
-    {text: '5', color: 'info'},
-    {text: '10', color: 'info'},
-    {text: '15', color: 'info'},
-    {text: '20', color: 'info'},
-    {text: '25', color: 'info'},
-    {text: '30', color: 'info'}
-  ], 'climbTime', false, 'climb-time');
+// scout.radio('.cell-tele-op-2', 'Climb Time Estimate',
+//   [
+//     {text: '5', color: 'info'},
+//     {text: '10', color: 'info'},
+//     {text: '15', color: 'info'},
+//     {text: '20', color: 'info'},
+//     {text: '25', color: 'info'},
+//     {text: '30', color: 'info'}
+//   ], 'climbTime', false, 'climb-time');
 scout.radio('.cell-other-info-3', 'Climb On Us',
   [
     {text: '👍', color: 'success', value: true},
     {text: '👎', color: 'danger', value: false}
   ], 'climbOnUs', true);
 scout.textarea('.cell-tele-op-2', 'Climb Notes', 'Notes...', 'climbNotes', true);
-scout.radio('.cell-tele-op-3', 'Cube Loading Method',
-  [
-    {text: 'Pneumatics', color: 'info'},
-    {text: 'Roller', color: 'info'},
-    {text: 'Other', color: 'info', class: 'cube-other-load'}
-  ], 'cubeLoadMethod', true, 'cube-load');
+// scout.radio('.cell-tele-op-3', 'Cube Loading Method',
+//   [
+//     {text: 'Pneumatics', color: 'info'},
+//     {text: 'Roller', color: 'info'},
+//     {text: 'Other', color: 'info', class: 'cube-other-load'}
+//   ], 'cubeLoadMethod', true, 'cube-load');
 scout.input('.cell-tele-op-3', 'Other', 'Cube Loading Method', 'cubeLoadMethod', false, 'other-load');
 scout.checkbox('.cell-tele-op-3', 'Cube Loading Location',
   [
@@ -118,9 +143,9 @@ $(document).ready(function () {
   $('.cube-other-load').click(function () {
     $('.other-load').fadeIn(1000);
   });
-  $('.no-climb').click(function () {
-    $('.climb-time').parent().parent().fadeOut(1000);
-  });
+  // $('.no-climb').click(function () {
+  //   $('.climb-time').parent().parent().fadeOut(1000);
+  // });
 });
 
 // Other info
@@ -134,14 +159,14 @@ scout.radio('.cell-other-info-1', 'Language of Robot Code',
     {text: 'Other', color: 'info', class: 'other-lang'}
   ], 'lang', true);
 scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'lang', false, 'lang-other');
-scout.radio('.cell-other-info-2', 'Drive Train',
+scout.radio('.cell-other-info-2', 'Type of Wheel',
   [
-    {text: '4 Wheel', color: 'info'},
-    {text: '6 Wheel', color: 'info'},
-    {text: '8 Wheel', color: 'info'},
-    {text: 'Shifting', color: 'info'},
-    {text: 'Swerve', color: 'info'}
+    {text: 'Colsons', color: 'info'},
+    {text: 'Omni', color: 'info'},
+    {text: 'Mecanum', color: 'info'},
+    {text: 'Other', color: 'info', class: 'other-wheel'}
   ], 'driveTrain', true);
+scout.input('.cell-other-info-2', 'Other', 'No Wheels =P', 'driveTrain', false, 'wheel-other');
 // scout.text('.cell-other-info-3', 'Cheesecakability', 24);
 // scout.radio('.cell-other-info-3', 'Willingness',
 //   [
@@ -153,16 +178,21 @@ scout.radio('.cell-other-info-2', 'Drive Train',
 //     {text: '👍', color: 'success', value: true},
 //     {text: '👎', color: 'danger', value: false}
 //   ], 'cheeseSpace', true);
-scout.input('.cell-other-info-2', 'Weight of Robot', 'In pounds...', 'weight', true);
+scout.input('.cell-other-info-2', 'Weight of Robot (w/o Bumpers and Battery)', 'In pounds...', 'weight', true);
 $(document).ready(function () {
   $('.lang-other').hide();
   $('.other-lang').click(function () {
     $('.lang-other').fadeIn(1000);
   });
+  $('.wheel-other').hide();
+  $('.other-wheel').click(function () {
+    $('.wheel-other').fadeIn(1000);
+  });
 });
+scout.page('Notes', [12]);
+scout.textarea('.cell-notes-1', 'Notes', 'Notes...', 'notes', true);
 
 // Photo
 scout.page('Photo and Finish', [12]);
 scout.text('.cell-photo-and-finish-1', 'Remember to take a 📸 of the 🤖!', 72);
 scout.done('.cell-photo-and-finish-1', true);
-scout.bluetooth()

@@ -1,7 +1,7 @@
 var scout = require("scouting")
 scout.init('match',true)
 scout.page("Login", [12])
-scout.login(".login","1540",true,"scout")
+scout.login(".login")
 scout.page("Match", [4,4,4])
 scout.timer(".cell-match-2",".cell-match-2","Start",30,150)
 scout.radio(
@@ -70,7 +70,5 @@ scout.radio(
   undefined,
   true
 );
-require("jquery")(".cell-match-2").append("<br>");
-scout.textarea(".cell-match-2","Notes (optional):","","notes");
 scout.bluetooth();
 scout.done(".cell-match-1",true);
