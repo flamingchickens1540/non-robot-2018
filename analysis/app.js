@@ -504,22 +504,22 @@ scout.input('.cell-team-lookup-1', '', '1540', 'asdf', false, 'input-team-lookup
 $('.input-team-lookup > input').keydown(function () {
   if (event.which == 13) {
     if (!enter) {
-      var left = [];
-      var mid = [];
-      var right = [];
-      for (var attr in pit[$(this).val()]) {
-        if (pit[$(this).val()].hasOwnProperty(attr)) {
-          if (pit[$(this).val()][attr].indexOf('Left Auto') >= 0) {
-            pitHelper(attr, left);
-          }
-          if (pit[$(this).val()][attr].indexOf('Mid Auto') >= 0) {
-            pitHelper(attr, mid);
-          }
-          if (pit[$(this).val()][attr].indexOf('Right Auto') >= 0) {
-            pitHelper(attr, right);
-          }
-        }
-      };
+      // var left = [];
+      // var mid = [];
+      // var right = [];
+      // for (var attr in pit[$(this).val()]) {
+      //   if (pit[$(this).val()].hasOwnProperty(attr)) {
+      //     if (pit[$(this).val()][attr].indexOf('Left Auto') >= 0) {
+      //       pitHelper(attr, left);
+      //     }
+      //     if (pit[$(this).val()][attr].indexOf('Mid Auto') >= 0) {
+      //       pitHelper(attr, mid);
+      //     }
+      //     if (pit[$(this).val()][attr].indexOf('Right Auto') >= 0) {
+      //       pitHelper(attr, right);
+      //     }
+      //   }
+      // };
       if (pit[$(this).val()]['cubeLoad'] != undefined && typeof pit[$(this).val()]['cubeLoad'] == 'object') {
         for (var j = 0; j < pit[$(this).val()]['cubeLoad'].length; j++) {
           pit[$(this).val()]['cubeLoad'][j] = ' ' + pit[$(this).val()]['cubeLoad'][j];
@@ -576,22 +576,25 @@ $('.input-team-lookup > input').keydown(function () {
                     <div class="row">
                       <div class="col-sm-4">`
                       + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
-                      + card('Right', right)
+                      + card('Scale Auto', pit[$(this).val()]['scaleAuto'])
                       + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb'].titleCase()))
                       + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : pit[$(this).val()]['cubeLoad']))
+                      + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                     + `</div>
                       <div class="col-sm-4">`
-                      + card('Left Auto', left)
+                      + card('Switch Auto', pit[$(this).val()]['switchAuto'])
                       + card('Role', pit[$(this).val()]['robotRole'])
                       + card('Climb Notes', pit[$(this).val()]['climbNotes'])
                       + card('Language', pit[$(this).val()]['lang'])
                       + card('Weight', pit[$(this).val()]['weight'])
+                      + card('Cross Line Auto', pit[$(this).val()]['lineAuto'])
                     + `</div>
                       <div class="col-sm-4">`
-                      + card('Mid Auto', mid)
+                      + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                       + card('Role Notes', pit[$(this).val()]['robotRoleNotes'])
                       + card('Cube Load Method', pit[$(this).val()]['cubeLoadMethod'])
                       + card('Drive Train', pit[$(this).val()]['driveTrain'])
+                      + card('Two Cube Auto', pit[$(this).val()]['twoCubeAuto'])
                     + `</div>
                     </div>
                   </div>
