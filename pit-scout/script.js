@@ -14,36 +14,36 @@ scout.page('Phone Number', [12]);
 scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
 scout.radio('.cell-phone-number-1', '',
   [
-    {text: 'Mentor', color: 'info', value: true},
-    {text: 'Student', color: 'info', value: false}
+    {text: 'Mentor', color: 'info', value: 'Yep'},
+    {text: 'Student', color: 'info', value: 'Nope'}
   ], 'occupation', true);
 
 // Auto
 scout.page('Auto', [4, 4, 4]);
 scout.radio('.cell-auto-1', 'Switch',
   [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: 'Yep'},
+    {text: '👎', color: 'danger', value: 'Nope'}
   ], 'switchAuto', true);
 scout.radio('.cell-auto-2', 'Scale',
   [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: 'Yep'},
+    {text: '👎', color: 'danger', value: 'Nope'}
   ], 'scaleAuto', true);
 scout.radio('.cell-auto-3', 'Exchange',
   [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: 'Yep'},
+    {text: '👎', color: 'danger', value: 'Nope'}
   ], 'exchangeAuto', true);
 scout.radio('.cell-auto-1', 'Two Cube',
   [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: 'Yep'},
+    {text: '👎', color: 'danger', value: 'Nope'}
   ], 'twoCubeAuto', true);
 scout.radio('.cell-auto-3', 'Cross Line',
   [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
+    {text: '👍', color: 'success', value: 'Yep'},
+    {text: '👎', color: 'danger', value: 'Nope'}
   ], 'lineAuto', true);
 // scout.checkbox('.cell-auto-1', 'Left Switch',
 //   [
