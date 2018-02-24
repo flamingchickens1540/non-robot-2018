@@ -441,6 +441,13 @@ function pitHelper(a, b) {
       break;
   };
 };
+function prettifyArray(a) {
+  var temp = [];
+  for (var i = 0; i < a.length; i++) {
+    temp[i] = ' ' + a[i];
+  };
+  return temp;
+};
 
 // Home
 scout.page('Home', [3, 3, 3, 3]);
@@ -520,9 +527,31 @@ $('.input-team-lookup > input').keydown(function () {
       //     }
       //   }
       // };
-      if (pit[$(this).val()]['cubeLoad'] != undefined && typeof pit[$(this).val()]['cubeLoad'] == 'object') {
-        for (var j = 0; j < pit[$(this).val()]['cubeLoad'].length; j++) {
-          pit[$(this).val()]['cubeLoad'][j] = ' ' + pit[$(this).val()]['cubeLoad'][j];
+      // if (pit[$(this).val()]['cubeLoad'] != undefined && typeof pit[$(this).val()]['cubeLoad'] == 'object') {
+      //   for (var j = 0; j < pit[$(this).val()]['cubeLoad'].length; j++) {
+      //     pit[$(this).val()]['cubeLoad'][j] = ' ' + pit[$(this).val()]['cubeLoad'][j];
+      //   };
+      // }
+      if (pit[$(this).val()] == undefined) {
+        pit[$(this).val()] = {
+          "team":"N/A",
+          "scout":"N/A",
+          "phone":"N/A",
+          "occupation":"N/A",
+          "switchAuto":"N/A",
+          "scaleAuto":"N/A",
+          "exchangeAuto":"N/A",
+          "twoCubeAuto":"N/A",
+          "lineAuto":"N/A",
+          "robotRole":["N/A"],
+          "robotRoleNotes":"N/A",
+          "climb":"N/A",
+          "climbNotes":"N/A",
+          "cubeLoad":["N/A"],
+          "lang":"N/A",
+          "driveTrain":"N/A",
+          "weight":"N/A",
+          "notes":"N/A"
         };
       }
       $('.team-lookup').after(`
@@ -578,23 +607,23 @@ $('.input-team-lookup > input').keydown(function () {
                       + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
                       + card('Scale Auto', pit[$(this).val()]['scaleAuto'])
                       + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb'].titleCase()))
-                      + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : pit[$(this).val()]['cubeLoad']))
+                      + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : prettifyArray(pit[$(this).val()]['cubeLoad'])))
                       + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                     + `</div>
                       <div class="col-sm-4">`
                       + card('Switch Auto', pit[$(this).val()]['switchAuto'])
-                      + card('Role', pit[$(this).val()]['robotRole'])
+                      + card('Role', prettifyArray(pit[$(this).val()]['robotRole']))
                       + card('Climb Notes', pit[$(this).val()]['climbNotes'])
                       + card('Language', pit[$(this).val()]['lang'])
                       + card('Weight', pit[$(this).val()]['weight'])
-                      + card('Cross Line Auto', pit[$(this).val()]['lineAuto'])
+                      + card('Notes', pit[$(this).val()]['notes'])
                     + `</div>
                       <div class="col-sm-4">`
                       + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                       + card('Role Notes', pit[$(this).val()]['robotRoleNotes'])
-                      + card('Cube Load Method', pit[$(this).val()]['cubeLoadMethod'])
-                      + card('Drive Train', pit[$(this).val()]['driveTrain'])
+                      + card('Wheels', pit[$(this).val()]['driveTrain'])
                       + card('Two Cube Auto', pit[$(this).val()]['twoCubeAuto'])
+                      + card('Cross Line Auto', pit[$(this).val()]['lineAuto'])
                     + `</div>
                     </div>
                   </div>
