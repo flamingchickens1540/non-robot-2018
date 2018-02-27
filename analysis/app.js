@@ -64,7 +64,14 @@ for (var i = 0; i < pitfest.length; i++) {
     pit[tempPit.team] = tempPit;
   }
 };
-
+if (!fs.existsSync('notes/')) {
+  fs.mkdirSync('notes/');
+}
+var notefest = JSON.parse(fs.readFileSync('notes/manifest.json', 'utf8'));
+var notes = [];
+for (var i = 0; i < notefest.length; i++) {
+  notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
+};
 // Functions
 String.prototype.titleCase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
@@ -322,6 +329,12 @@ function parseExchange(a) {
   return 'Load: ' + load + ', Place: ' + place;
 };
 function matchDisplay(a) {
+  var tempNotes = [];
+  for (var i = 0; i < notes.length; i++) {
+    if (notes[i][$('.lookup-team').text()] != undefined) {
+      tempNotes.push(' ' + notes[i][$('.lookup-team').text()]);
+    }
+  };
   for (var i = 0; i < data.length; i++) {
     if (data[i].team == $('.lookup-team').text()) {
       switch (a) {
@@ -398,6 +411,7 @@ function matchDisplay(a) {
               <td>` + data[i].match + `</td>
               <td>` + scouts[data[i].scout] + `</td>
               <td>` + data[i].notes + `</td>
+              <td>` + tempNotes + `</td>
             </tr>
           `);
           break;
@@ -532,28 +546,36 @@ $('.input-team-lookup > input').keydown(function () {
       //     pit[$(this).val()]['cubeLoad'][j] = ' ' + pit[$(this).val()]['cubeLoad'][j];
       //   };
       // }
+      var template = {
+        "team":"N/A",
+        "scout":"N/A",
+        "phone":"N/A",
+        "occupation":"N/A",
+        "switchAuto":"N/A",
+        "scaleAuto":"N/A",
+        "exchangeAuto":"N/A",
+        "twoCubeAuto":"N/A",
+        "lineAuto":"N/A",
+        "robotRole":["N/A"],
+        "robotRoleNotes":"N/A",
+        "climb":"N/A",
+        "climbNotes":"N/A",
+        "cubeLoad":["N/A"],
+        "lang":"N/A",
+        "driveTrain":"N/A",
+        "weight":"N/A",
+        "notes":"N/A"
+      };
       if (pit[$(this).val()] == undefined) {
-        pit[$(this).val()] = {
-          "team":"N/A",
-          "scout":"N/A",
-          "phone":"N/A",
-          "occupation":"N/A",
-          "switchAuto":"N/A",
-          "scaleAuto":"N/A",
-          "exchangeAuto":"N/A",
-          "twoCubeAuto":"N/A",
-          "lineAuto":"N/A",
-          "robotRole":["N/A"],
-          "robotRoleNotes":"N/A",
-          "climb":"N/A",
-          "climbNotes":"N/A",
-          "cubeLoad":["N/A"],
-          "lang":"N/A",
-          "driveTrain":"N/A",
-          "weight":"N/A",
-          "notes":"N/A"
-        };
+        pit[$(this).val()] = {};
       }
+      for (var i in template) {
+        if (template.hasOwnProperty(i)) {
+          if (pit[$(this).val()][i] == undefined) {
+            pit[$(this).val()][i] = 'N/A';
+          }
+        }
+      };
       $('.team-lookup').after(`
         <div class="after-team-lookup">
           <h2 class="lookup-team" style="text-align: center;">` + $(this).val() + `</h2>
@@ -585,7 +607,8 @@ $('.input-team-lookup > input').keydown(function () {
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
-                  <th scope="col">Notes</th>
+                  <th scope="col">Stand App Notes</th>
+                  <th scope="col">Notes App Notes</th>
                 </tr>
               </thead>
               <tbody class="lookup-notes"></tbody>
