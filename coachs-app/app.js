@@ -385,8 +385,6 @@ $(document).ready(function () {
           $(".toShow").show()
         }
       });
-
-=======
 scout.checkbox('.cell-match-preview-1', '', [{text: 'Next Match: ' + matchNum, color: 'warning', class: 'btn-match'}], 'asdf', false);
 $(document).ready(function () {
   $('.body-div-match-preview > h1, .body-div-match-preview > br, .body-div-match-preview > hr').remove();
