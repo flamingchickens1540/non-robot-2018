@@ -105,7 +105,7 @@ scout.checkbox('.cell-tele-op-1', 'Preferred Robot Role',
     {text: 'Exchange', color: 'info'}
   ], 'robotRole', true);
 scout.textarea('.cell-tele-op-1', 'Robot Role Notes', 'Notes...', 'robotRoleNotes', false);
-scout.radio('.cell-tele-op-2', 'Climb',
+scout.checkbox('.cell-tele-op-2', 'Climb',
   [
     {text: 'Support', color: 'info', value: 'support'},
     {text: 'Solo', color: 'warning', value: 'self'},
@@ -120,11 +120,11 @@ scout.radio('.cell-tele-op-2', 'Climb',
 //     {text: '25', color: 'info'},
 //     {text: '30', color: 'info'}
 //   ], 'climbTime', false, 'climb-time');
-scout.radio('.cell-other-info-3', 'Climb On Us',
-  [
-    {text: '👍', color: 'success', value: true},
-    {text: '👎', color: 'danger', value: false}
-  ], 'climbOnUs', true);
+// scout.radio('.cell-other-info-3', 'Climb On Us',
+//   [
+//     {text: '👍', color: 'success', value: true},
+//     {text: '👎', color: 'danger', value: false}
+//   ], 'climbOnUs', true);
 scout.textarea('.cell-tele-op-2', 'Climb Notes', 'Notes...', 'climbNotes', true);
 // scout.radio('.cell-tele-op-3', 'Cube Loading Method',
 //   [
@@ -161,7 +161,7 @@ scout.radio('.cell-other-info-1', 'Language of Robot Code',
 scout.input('.cell-other-info-1', 'Other', 'Javascript =P', 'lang', false, 'lang-other');
 scout.radio('.cell-other-info-2', 'Type of Wheel',
   [
-    {text: 'Colsons', color: 'info'},
+    {text: 'Traction Wheels', color: 'info'},
     {text: 'Omni', color: 'info'},
     {text: 'Mecanum', color: 'info'},
     {text: 'Other', color: 'info', class: 'other-wheel'}
@@ -194,5 +194,14 @@ scout.textarea('.cell-notes-1', 'Notes', 'Notes...', 'notes', true);
 
 // Photo
 scout.page('Photo and Finish', [12]);
-scout.text('.cell-photo-and-finish-1', 'Remember to take a 📸 of the 🤖!', 72);
+scout.text('.cell-photo-and-finish-1', 'Remember to take a 📸 of the 🤖!', 64);
+$('.cell-photo-and-finish-1').append(`
+  <h3>Instructions</h3>
+  <ol>
+    <li>Take a clear photo of the robot, landscape orientation</li>
+    <li>Send your amazing photo to <a href="mailto:1540photo@gmail.com">1540photo@gmail.com</a></li>
+    <li>Make sure to attach your photo as an attachment and the subject as the team number</li>
+    <li>If you have multiple photos, attach them all to one email</li>
+  </ol>
+`);
 scout.done('.cell-photo-and-finish-1', true);
