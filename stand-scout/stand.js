@@ -534,6 +534,10 @@ $(document).ready(function(){
       cycleData.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i] + '.json', 'utf-8')));
     }
   })
+  $('.btn-back').click(function(){
+    $('.btn-done').hide()
+    $('.btn-next').fadeIn()
+  })
   $('.btn-next').click(function(){
     if ($('.btn-next').attr('data-page') == 'body-div-endgame') {
       $('.btn-next').parent().addClass('thingy')
@@ -541,7 +545,10 @@ $(document).ready(function(){
       $('.thingy').append("<button class='btn btn-outline-success btn-done'>Done!</button>")
     }
     $('.btn-done').click(function(){
-      console.log(1);
+      var matchNum = fs.readFileSync('scouting/match.txt', 'utf-8')
+      var newMatchNum = parseInt(matchNum) + 1
+      fs.writeFileSync('scouting/match.txt', newMatchNum)
+      location.reload()
     })
   })
   $('.mc-6').hide()
