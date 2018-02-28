@@ -45,7 +45,7 @@
 }
 .button-redPortal1{
   position: relative;
-  left: 51vw;
+  left: 52vw;
   top: 12.5vh;
   height: 3.5vh;
   font-size: .9vw;
@@ -53,7 +53,7 @@
 }
 .button-bluePortal2{
   position: relative;
-  left: -10.5vw;
+  left: -10vw;
   top: 63.5vh;
   height: 3.5vh;
   font-size: .9vw;
@@ -61,7 +61,7 @@
 }
 .button-redPortal2{
   position: relative;
-  left: 43vw;
+  left: 44.5vw;
   top: 63.5vh;
   height: 3.5vh;
   width: 7.5vw;
@@ -69,23 +69,23 @@
 }
 .button-blueSwitch{
   position: relative;
-  left: 15vw;
-  top: 51vh;
+  left: 17vw;
+  top: 51.5vh;
   height: 3.5vh;
   width: 6.5vw;
   font-size: .9vw;
 }
 .button-redSwitch{
   position: relative;
-  left: -19.5vw;
-  top: 51vh;
+  left: -18vw;
+  top: 51.5vh;
   height: 3.5vh;
   width: 6.5vw;
   font-size: .9vw;
 }
 .button-redExchange{
   position: relative;
-  left: -55vw;
+  left: -52.5vw;
   top: 32.5vh;
   height: 3.5vh;
   width: 8vw;
@@ -93,7 +93,7 @@
 }
 .button-blueExchange{
   position: relative;
-  left: 20.3vw;
+  left: 22.5vw;
   top: 43.5vh;
   height: 3.5vh;
   width: 8vw;
@@ -101,18 +101,26 @@
 }
 .button-redPlatform{
   position: relative;
-  left: -45.7vw;
-  top: 30vh;
+  left: -41.5vw;
+  top: 28vh;
   height: 3.5vh;
   width: 7vw;
   font-size: .9vw;
 }
 .button-bluePlatform{
   position: relative;
-  left: -20.2vw;
-  top: 30vh;
+  left: -18.5vw;
+  top: 28vh;
   height: 3.5vh;
   width: 7vw;
+  font-size: .9vw;
+}
+.button-ground{
+  position: relative;
+  left: -42vw;
+  top: 60vh;
+  height: 3.5vh;
+  width: 10vw;
   font-size: .9vw;
 }
 .body-div-teleop hr{

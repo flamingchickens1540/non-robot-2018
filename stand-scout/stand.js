@@ -7,18 +7,18 @@ const fs = require('fs-extra');
 scout.init('stand', true);
 
 //************************************** Global vars
-var notyscale;
-var notybluePortal1;
-var notybluePortal2;
-var notyredPortal1;
-var notyredPortal2;
-var notyblueSwitch;
-var notyredSwitch;
-var notyblueExchange;
-var notyredExchange;
-var notybluePlatform;
-var notyredPlatform;
-var notygiza;
+// var notyscale;
+// var notybluePortal1;
+// var notybluePortal2;
+// var notyredPortal1;
+// var notyredPortal2;
+// var notyblueSwitch;
+// var notyredSwitch;
+// var notyblueExchange;
+// var notyredExchange;
+// var notybluePlatform;
+// var notyredPlatform;
+// var notygiza;
 var color;
 var time;
 var cycleTime;
@@ -35,19 +35,52 @@ var cycleData;
 var buttons = ["scale", "bluePortal1", "bluePortal2", "redPortal1", "redPortal2", "blueSwitch", "redSwitch", "blueExchange", "redExchange", "bluePlatform", "redPlatform", "giza"]
 var names = ["Scale", "Blue Portal 1", "Blue Portal 2", "Red Portal 1", "Red Portal 2", "Blue Switch", "Red Switch", "Blue Exchange", "Red Exchange", "Blue platform", "Red platform", "Cube Zone"]
 var successNoty = new noty({
-  text: "Action Recorded!",
+  text: "Action Completed!",
   layout: "topRight",
   timeout: 1000,
   progressBar: true,
   type: "success"
 });
 var autoNoty = new noty({
-  text: "Select value for cross line",
-  layout: "topRight",
-  timeout: 5000,
+  text: "Please select value for cross line",
+  layout: "center",
+  timeout: 1000,
   progressBar: true,
-  type: "danger"
+  type: "error"
 });
+//save function
+function save(place) {
+  //var used to get array
+  var teamNum = $('.role-team').text()
+  var roleNum = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
+  var matchNum = 'm' + $('.matchnum').val()
+  var fileName = 'data/' + matchNum + '-' + roleNum + '-' + teamNum + '.json'
+  var jsoninfo = JSON.parse(fs.readFileSync(fileName))
+  //figuring out where the cube was put/taken from
+  var jsonplace;
+  if (place == 'redPortal1'||place == 'redPortal2') {
+    jsonplace = 'redPortal'
+  }
+  else if (place == 'bluePortal1'|| place == 'bluePortal2') {
+    jsonplace = 'bluePortal'
+  }
+  else if (place == 'redPlatform' || place == 'bluePlatform') {
+    jsonplace = place + 'Cube'
+  }
+  else{
+    jsonplace = place
+  }
+  //adding the cube to the place in the array
+  if (jsoninfo[jsonplace] == undefined) {
+    jsoninfo[jsonplace] = 1
+  }
+  else {
+    jsoninfo[jsonplace] = parseInt(jsoninfo[jsonplace]) + 1
+  }
+  //resaving the JSON file as the new array
+  var newjson = JSON.stringify(jsoninfo)
+  fs.writeFileSync(fileName, newjson);
+}
 // var notyBluePortal1 = new Noty({
 //   type: 'success',
 //   layout: 'center',
@@ -162,41 +195,44 @@ scout.page(
 // $(document).ready(function () {
   //************************************ Loop creating the div's and the buttons
   for (var i = 0; i < buttons.length; i++) {
-    $('.cell-teleop-1').append(`
-      <div class='modal fade modal-` + buttons[i] + `' role='dialog'data-backdrop='static' >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header" style="text-align:center;">
-              <h3>` + names[i] + `</h3>
-            </div>
-            <div class="modal-body">
-              <div class='div` + buttons[i] + `'></div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary btn-small button-submit-` + i + ` button-submit"data-toggle="modal" data-target=".modal-` + buttons[i] + `"> Confirm </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `)
+    // $('.cell-teleop-1').append(`
+    //   <div class='modal fade modal-` + buttons[i] + `' role='dialog'data-backdrop='static' >
+    //     <div class="modal-dialog">
+    //       <div class="modal-content">
+    //         <div class="modal-header" style="text-align:center;">
+    //           <h3>` + names[i] + `</h3>
+    //         </div>
+    //         <div class="modal-body">
+    //           <div class='div` + buttons[i] + `'></div>
+    //         </div>
+    //         <div class="modal-footer">
+    //           <button type="button" class="btn btn-primary btn-small button-submit-` + i + ` button-submit"data-toggle="modal" data-target=".modal-` + buttons[i] + `"> Confirm </button>
+    //         </div>
+    //       </div>
+    //     </div>
+    //   </div>
+    // `)
     if (buttons[i].indexOf("blue") == 0) {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-' + buttons[i] + '" data-toggle="modal" data-target=".modal-' + buttons[i] + '">' + names[i] + '</button>');
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-' + buttons[i] + '" data-num="' + i + '" data-place="' + buttons[i] + '">' + names[i] + '</button>');
     }
     else if (buttons[i].indexOf("red") == 0) {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-' + buttons[i] + '"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">' + names[i] + '</button>');
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-' + buttons[i] + '" data-num="' + i + '" data-place="' + buttons[i] + '">' + names[i] + '</button>');
     }
     else if (buttons[i].indexOf("giza") == 0) {
       if ($('.role-name').text().indexOf("Blue") == 0){
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
       else{
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;"  data-toggle="modal" data-target=".modal-' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
     }
     else {
-      $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale" data-toggle="modal" data-target=".modal-' + buttons[i] + '">Scale</button>')
+      $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale" data-num="' + i + '"" data-place="' + buttons[i] + '">Scale</button>')
     }
   }
+  $('.cell-teleop-1').append(`
+    <button type="button" class="btn btn-success btn-small button-ground"> Cube From Ground </button>
+    `)
   // if ($('.role-name').text().indexOf("Blue") == 0) {
   //   $('.cell-teleop-1').append(`
   //     <img src="ArcadeBlue.png" style="width: 80vw; height: 60vh;" usemap="#arcadeblue" class="arcade img-fluid">
@@ -236,114 +272,172 @@ scout.page(
   //   `)
   // }
   //************************************ Tele scouting functions
-  scout.counter(
-    '.divscale',
-    'Boxes on Scale',
-    1,
-    'scale'
-  )
-  scout.counter(
-    '.divredSwitch',
-    'Boxes on Red Switch',
-    1,
-    'redSwitch'
-  )
-  scout.counter(
-    '.divblueSwitch',
-    'Boxes on Blue Switch',
-    1,
-    'blueSwitch'
-  )
-  scout.counter(
-    '.divredPlatform',
-    'Boxes taken from red platform',
-    1,
-    'redPlatformCube'
-  )
-  scout.counter(
-    '.divbluePlatform',
-    'Boxes taken from blue platform',
-    1,
-    'bluePlatformCube'
-  )
-  scout.counter(
-    '.divgiza',
-    'Boxes taken from the Pyramid',
-    1,
-    'pyramid',
-  )
-  if ($('.role-name').text().indexOf("Blue") == 0){
-    $('.divbluePlatform .bg-9').removeClass('btn-group')
-    $('.divbluePlatform .scout-mc').after('')
-    scout.checkbox(
-      '.divblueExchange',
-      'Blue Exchange Cubes',
-      [
-        {
-          text: 'Recived Cube',
-          color: 'info',
-          value: 'load'
-        },
-        {
-          text: 'Placed Cube',
-          color: 'info',
-          value: 'place'
-        }
-      ],
-      'blueExchange'
-    );
-    scout.counter(
-      '.divbluePortal1',
-      'Boxes taken from portal',
-      1,
-      'bluePortal'
-    )
-    scout.counter(
-      '.divbluePortal2',
-      'Boxes taken from portal',
-      1,
-      'bluePortal'
-    )
-  }
-  else{
-    $('.divredPlatform .bg-9').removeClass('btn-group')
-    $('.divredPlatform .scout-mc').after('')
-    scout.checkbox(
-      '.divredExchange',
-      'Red Exchange Cubes',
-      [
-        {
-          text: 'Recived Cube',
-          color: 'danger',
-          value: 'load'
-        },
-        {
-          text: 'Placed Cube',
-          color: 'danger',
-          value: 'place'
-        }
-      ],
-      'redExchange'
-    );
-    scout.counter(
-      '.divredPortal1',
-      'Boxes taken from portal',
-      1,
-      'redPortal'
-    )
-    scout.counter(
-      '.divredPortal2',
-      'Boxes taken from portal',
-      1,
-      'redPortal'
-    )
-}
-for (var i = 0; i < buttons.length; i++) {
-  if ($('.div' + buttons[i]).html() == '') {
-      $('.div' + buttons[i]).append('<span>Sorry, This Robot is Useless Here</span>')
-  }
-}
+//   scout.counter(
+//     '.divscale',
+//     'Boxes on Scale',
+//     1,
+//     'scale'
+//   )
+//   scout.counter(
+//     '.divredSwitch',
+//     'Boxes on Red Switch',
+//     1,
+//     'redSwitch'
+//   )
+//   scout.counter(
+//     '.divblueSwitch',
+//     'Boxes on Blue Switch',
+//     1,
+//     'blueSwitch'
+//   )
+//   scout.counter(
+//     '.divredPlatform',
+//     'Boxes taken from red platform',
+//     1,
+//     'redPlatformCube'
+//   )
+//   scout.counter(
+//     '.divbluePlatform',
+//     'Boxes taken from blue platform',
+//     1,
+//     'bluePlatformCube'
+//   )
+//   scout.counter(
+//     '.divgiza',
+//     'Boxes taken from the Pyramid',
+//     1,
+//     'pyramid',
+//   )
+//   if ($('.role-name').text().indexOf("Blue") == 0){
+//     $('.divbluePlatform .bg-9').removeClass('btn-group')
+//     $('.divbluePlatform .scout-mc').after('')
+//     scout.checkbox(
+//       '.divblueExchange',
+//       'Blue Exchange Cubes',
+//       [
+//         {
+//           text: 'Recived Cube',
+//           color: 'info',
+//           value: 'load'
+//         },
+//         {
+//           text: 'Placed Cube',
+//           color: 'info',
+//           value: 'place'
+//         }
+//       ],
+//       'blueExchange'
+//     );
+//     scout.counter(
+//       '.divbluePortal1',
+//       'Boxes taken from portal',
+//       1,
+//       'bluePortal'
+//     )
+//     scout.counter(
+//       '.divbluePortal2',
+//       'Boxes taken from portal',
+//       1,
+//       'bluePortal'
+//     )
+//     $('.button-redPortal1').attr('data-toggle', '')
+//     $('.button-redPortal2').attr('data-toggle', '')
+//     $('.button-redExchange').attr('data-toggle', '')
+//   }
+//   else{
+//     $('.divredPlatform .bg-9').removeClass('btn-group')
+//     $('.divredPlatform .scout-mc').after('')
+//     scout.checkbox(
+//       '.divredExchange',
+//       'Red Exchange Cubes',
+//       [
+//         {
+//           text: 'Recived Cube',
+//           color: 'danger',
+//           value: 'load'
+//         },
+//         {
+//           text: 'Placed Cube',
+//           color: 'danger',
+//           value: 'place'
+//         }
+//       ],
+//       'redExchange'
+//     );
+//     scout.counter(
+//       '.divredPortal1',
+//       'Boxes taken from portal',
+//       1,
+//       'redPortal'
+//     )
+//     scout.counter(
+//       '.divredPortal2',
+//       'Boxes taken from portal',
+//       1,
+//       'redPortal'
+//     )
+//     $('.button-bluePortal1').attr('data-toggle', '')
+//     $('.button-bluePortal2').attr('data-toggle', '')
+//     $('.button-blueExchange').attr('data-toggle', '')
+// }
+// for (var i = 0; i < buttons.length; i++) {
+//   if ($('.div' + buttons[i]).html() == '') {
+//       $('.div' + buttons[i]).append('<span>Sorry, This Robot is Useless Here</span>')
+//   }
+// }
 $(document).ready(function(){
+  if ($('.role-name').text().indexOf('Red') == 0) {
+    $(`.button-redPortal1,
+      .button-redPortal2,
+      .button-redPlatform,
+      .button-bluePlatform,
+      .button-giza`).addClass('getCube')
+      $(`.button-redSwitch,
+        .button-blueSwitch,
+        .button-redExchange,
+        .button-scale`).addClass('giveCube')
+  }
+  else if ($('.role-name').text().indexOf('Blue') == 0) {
+    $(`.button-bluePortal1,
+      .button-bluePortal2,
+      .button-bluePlatform,
+      .button-redPlatform,
+      .button-giza`).addClass('getCube')
+    $(`.button-redSwitch,
+      .button-blueSwitch,
+      .button-blueExchange,
+      .button-scale`).addClass('giveCube')
+  }
+  // for (var i = 0; i < buttons.length; i++) {
+  //   $('.button-' + buttons[i]).click(function(){
+  //     var place = $(this).attr('data-place')
+  //     save(place);
+  //   })
+  // }
+  $('.button-ground').click(function(){
+    var noty = new Noty({
+      text: "Cube picked up from the ground",
+      layout: "topRight",
+      timeout: 2500,
+      progressBar: true,
+      type: "success"
+    });
+    noty.show()
+  })
+  $('.getCube, .giveCube').click(function(){
+    var place = $(this).attr('data-place')
+    var placeNum = parseInt($(this).attr('data-num'))
+    var placeName = names[placeNum]
+    var noty = new Noty({
+      text: "Cube recorded for " + placeName,
+      layout: "topRight",
+      timeout: 2500,
+      progressBar: true,
+      type: "success"
+    });
+    noty.show()
+    save(place)
+  })
   //rando helpful things - adding quotes
   var rando = Math.ceil(Math.random()*1640)
   var quoteText = quotes[rando]['quoteText']
@@ -351,16 +445,14 @@ $(document).ready(function(){
   $('.cell-login-2').append(`<br><br><br><br><br><div class='quote' style='text-align: center;'>` +
   quoteText + `<br>~ ` + quoteAuthor +
   `</div>`)
-  //displaying noty onclick
-  $('.button-submit').click(function(){
-    successNoty.show();
-  })
   //Displaying Auto noty
   $('.btn-next').click(function(){
     if ($('.cell-auto-1').is(':visible') == true) {
       if (!($('.btn-2-1').hasClass('active')) && !($('.btn-2-2').hasClass('active'))) {
-        autoNoty.show()
-        alert('Please Select an Cross Line Value')
+        if ($('.num-change').text() != 'Test') {
+          autoNoty.show()
+          $('.btn-back').click()
+        }
       }
     }
   })
@@ -368,49 +460,71 @@ $(document).ready(function(){
   if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json') == true) {
     fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
   }
-  $('.button-submit-3, .button-submit-4, .button-submit-9, .button-submit-10, .button-submit-11, .btn-11-1').click(function(){
+  $('.getCube, .button-ground').click(function(){
     time = new Date().getTime()
   })
-  $('.btn-11-2, .button-submit-0, .button-submit-5, .button-submit-6').click(function () {
+  $('.giveCube').click(function () {
     if (!fs.existsSync('cycle/')) {
       fs.mkdirSync('cycle/')
     }
     var currentTime = new Date().getTime()
     cycleTime = currentTime - time
     console.log(cycleTime);
-    if ($(this).hasClass('btn-11-2')) {
+    //figuring out location of drop and recording cycle time under that place
+    if ($(this).attr('data-place') == 'redExchange' || $(this).attr('data-place') == 'blueExchange') {
       var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
       var n = cycleJSON['exchange'].length
       cycleJSON['exchange'][n] = cycleTime
       fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
       time = 0
     }
-    //figuring out the location of the cycle drop
-    for (var i = 0; i < 7; i++) {
-      if ($(this).hasClass('button-submit-' + i)) {
-        if (i == 0) {
-          var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
-          var n = cycleJSON['scale'].length
-          cycleJSON['scale'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-          time = 0
-        }
-        else if(i == 6) {
-          var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
-          var n = cycleJSON['redswitch'].length
-          cycleJSON['redswitch'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-          time = 0
-        }
-         else if(i == 5) {
-          var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
-          var n = cycleJSON['blueswitch'].length
-          cycleJSON['blueswitch'][n] = cycleTime
-          fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-          time = 0
-        }
-      }
+    else if ($(this).attr('data-place') == 'scale') {
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var n = cycleJSON['scale'].length
+      cycleJSON['scale'][n] = cycleTime
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+      time = 0
     }
+    else if ($(this).attr('data-place') == 'redSwitch') {
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var n = cycleJSON['redswitch'].length
+      cycleJSON['redswitch'][n] = cycleTime
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+      time = 0
+    }
+    else if ($(this).attr('data-place') == 'blueSwitch') {
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var n = cycleJSON['blueswitch'].length
+      cycleJSON['blueswitch'][n] = cycleTime
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+      time = 0
+    }
+    //figuring out the location of the cycle drop
+    // for (var i = 0; i < 7; i++) {
+    //   if ($(this).hasClass('button-submit-' + i)) {
+    //     if (i == 0) {
+    //       var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+    //       var n = cycleJSON['scale'].length
+    //       cycleJSON['scale'][n] = cycleTime
+    //       fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+    //       time = 0
+    //     }
+    //     else if(i == 6) {
+    //       var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+    //       var n = cycleJSON['redswitch'].length
+    //       cycleJSON['redswitch'][n] = cycleTime
+    //       fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+    //       time = 0
+    //     }
+    //      else if(i == 5) {
+    //       var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+    //       var n = cycleJSON['blueswitch'].length
+    //       cycleJSON['blueswitch'][n] = cycleTime
+    //       fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
+    //       time = 0
+    //     }
+    //   }
+    // }
     //saving the cycle time
     if (!fs.existsSync('cycle/manifest.json')) {
       fs.writeFileSync('cycle/manifest.json', '[]')
@@ -419,6 +533,30 @@ $(document).ready(function(){
     for (var i = 0; i < cycleManifest.length; i++) {
       cycleData.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i] + '.json', 'utf-8')));
     }
+  })
+  $('.btn-next').click(function(){
+    if ($('.btn-next').attr('data-page') == 'body-div-endgame') {
+      $('.btn-next').parent().addClass('thingy')
+      $('.btn-next').hide()
+      $('.thingy').append("<button class='btn btn-outline-success btn-done'>Done!</button>")
+    }
+    $('.btn-done').click(function(){
+      console.log(1);
+    })
+  })
+  $('.mc-6').hide()
+  $('.mc-7').hide()
+  $('.yes-climb').click(function(){
+    $('.mc-7').hide()
+    $('.mc-6').show()
+  })
+  $('.no-climb').click(function(){
+    $('.mc-6').hide()
+    $('.mc-7').show()
+  })
+  $('.odd-climb').click(function(){
+    $('.mc-6').hide()
+    $('.mc-7').hide()
   })
 })
 //14, 15 are color based 10, 9, 13, exchange
@@ -499,18 +637,53 @@ scout.radio(
   'Climbing',
   [{
     text: 'Front',
-    color: 'danger',
-    value: 'climbFront'
+    color: 'success',
+    value: 'climbFront',
+    class: 'yes-climb'
   },
   {
     text: 'Side',
-    color: 'info',
-    value: 'climbSide'
+    color: 'success',
+    value: 'climbSide',
+    class: 'yes-climb'
   },
   {
-    text: 'Assisted',
+    text: 'Recived Assistance',
+    color: 'info',
+    value: 'wasAssisted',
+    class: 'odd-climb'
+  },
+  {
+    text: 'Nothing',
+    color: 'danger',
+    value: 'nothing',
+    class: 'no-climb'
+  }],
+  'start',
+  true
+);
+scout.radio(
+  '.cell-climb-1',
+  'Did this robot assist another robot?',
+  [{
+    text: 'yes',
     color: 'success',
     value: 'assist'
+  },
+  {
+    text: 'no',
+    color: 'danger',
+    value: 'no-assist'
+  }],
+  'assist'
+)
+scout.radio(
+  '.cell-climb-1',
+  'What did this robot do?',
+  [{
+    text: 'Parking',
+    color: 'success',
+    value: 'parking',
   },
   {
     text: 'Levitate',
@@ -518,12 +691,11 @@ scout.radio(
     value: 'levitate'
   },
   {
-    text: 'Parking',
+    text: 'Nothing',
     color: 'danger',
-    value: 'parking'
-  }],
-  'start'
-);
+    value: 'nothing'
+  }]
+)
 scout.textarea(
   '.cell-climb-2',
   'Climbing notes',
@@ -531,7 +703,7 @@ scout.textarea(
   'climbNotes'
 )
 scout.page(
-  'Endgame', [11,1]
+  'Endgame', [12]
 )
 scout.textarea(
   '.cell-endgame-1',
@@ -539,9 +711,3 @@ scout.textarea(
   'This robot overall was...',
   'notes'
 )
-scout.done(
-  '.cell-endgame-2',
-  false
-)
-//Counter vs Cycle (Confirm with Tristan),
-//make buttons do stuff, create endgame page
