@@ -693,12 +693,12 @@ scout.radio(
   [{
     text: 'yes',
     color: 'success',
-    value: 'assist'
+    value: true
   },
   {
     text: 'no',
     color: 'danger',
-    value: 'no-assist'
+    value: false
   }],
   'assist'
 )
@@ -718,7 +718,7 @@ scout.radio(
   {
     text: 'Nothing',
     color: 'danger',
-    value: 'nothing'
+    value: false
   }],
   'noclimb'
 )
