@@ -486,3 +486,110 @@ function displayRank(a, b) {
   };
   return a;
 };
+//
+//
+function analyzeRank() {
+ var teamCycleAvg = {};
+ var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+ var switchers = [];
+ var scalers = [];
+ var exchangers = [];
+ var defenders = [];
+ var newAvg = {};
+ for (var i = 0; i < cycle.length; i++) {
+   var avg = {};
+   for (var attr in cycle[i]) {
+     if (cycle[i].hasOwnProperty(attr)) {
+       if (attr != 'team') {
+         avg[attr] = 0;
+         for (var j = 0; j < cycle[i][attr].length; j++) {
+           avg[attr] += cycle[i][attr][j];
+           if (j + 1 == cycle[i][attr].length) {
+             avg[attr] /= j + 1;
+           }
+         };
+       }
+     }
+   };
+   teamCycleAvg[cycle[i].team] = avg;
+ };
+ for (var team in teamCycleAvg) {
+   if (teamCycleAvg.hasOwnProperty(team)) {
+     for (var tag in teamCycleAvg[team]) {
+       if (teamCycleAvg[team].hasOwnProperty(tag)) {
+         newAvg[team] = newAvg[team] == undefined ? {} : newAvg[team];
+         switch (tag) {
+           case 'redswitch':
+             if (tags[team].indexOf('Switcher') >= 0) {
+               switchers.push(teamCycleAvg[team]['switch']);
+               newAvg[team]['switch'] = teamCycleAvg[team]['switch'];
+             }
+             break;
+           case 'scale':
+             if (tags[team].indexOf('Scaler') >= 0) {
+               scalers.push(teamCycleAvg[team]['scale']);
+               newAvg[team]['scale'] = teamCycleAvg[team]['scale'];
+             }
+             break;
+           case 'exchange':
+             if (tags[team].indexOf('Exchanger') >= 0) {
+               exchangers.push(teamCycleAvg[team]['exchange']);
+               newAvg[team]['exchange'] = teamCycleAvg[team]['exchange'];
+             }
+             break;
+           case 'blueswitch':
+             if (tags[team].indexOf('Defender') >= 0) {
+               defenders.push(teamCycleAvg[team]['blueswitch']);
+               newAvg[team]['defense'] = teamCycleAvg[team]['blueswitch'];
+             }
+             break;
+         };
+       }
+     };
+   }
+ };
+ switchers.sort(function (a, b) {return a - b;});
+ scalers.sort(function (a, b) {return a - b;});
+ exchangers.sort(function (a, b) {return a - b;});
+ defenders.sort(function (a, b) {return a - b;});
+ for (var team in newAvg) {
+   if (newAvg.hasOwnProperty(team)) {
+     for (var tag in newAvg[team]) {
+       if (newAvg[team].hasOwnProperty(tag)) {
+         switch (tag) {
+           case 'switch':
+             for (var i = 0; i < switchers.length; i++) {
+               if (switchers[i] == newAvg[team]['switch']) {
+                 newAvg[team]['switch'] = [i + 1, newAvg[team]['switch']];
+               }
+             };
+             break;
+           case 'scale':
+             for (var i = 0; i < scalers.length; i++) {
+               if (scalers[i] == newAvg[team]['scale']) {
+                 newAvg[team]['scale'] = [i + 1, newAvg[team]['scale']];
+               }
+             };
+             break;
+           case 'exchange':
+             for (var i = 0; i < exchangers.length; i++) {
+               if (exchangers[i] == newAvg[team]['exchange']) {
+                 newAvg[team]['exchange'] = [i + 1, newAvg[team]['exchange']];
+               }
+             };
+             break;
+           case 'defense':
+             for (var i = 0; i < defenders.length; i++) {
+               if (defenders[i] == newAvg[team]['defense']) {
+                 newAvg[team]['defense'] = [i + 1, newAvg[team]['defense']];
+               }
+             };
+             break;
+         };
+       }
+     };
+   }
+ };
+ fs.writeFileSync('export/rankings.json', JSON.stringify(newAvg));
+ return newAvg;
+};
