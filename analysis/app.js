@@ -124,7 +124,6 @@ function analyzeTags(a) {
     // exchanging[i] += parseInt(teamInfo[i].exchangeAuto);
     defending[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)) : (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)));
     total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];
-    console.log(teamInfo[i], total[i]);
   };
   for (var i = 0; i < switching.length; i++) {
     switchAvg += switching[i];
@@ -272,7 +271,6 @@ function analyzeRank() {
    }
  };
  fs.writeFileSync('export/rankings.json', JSON.stringify(newAvg));
- console.log(newAvg);
  return newAvg;
 };
 function displayRank(a, b) {
@@ -651,7 +649,7 @@ $('.input-team-lookup > input').keydown(function () {
             </table>
             <br>
             <br>
-            <button class="btn btn-danger">Average Cubes: ` + teamCubeData[$(this).val()][4] + `</button>
+            <button class="btn btn-danger">Average Cubes: ` + (teamCubeData[$(this).val()] == undefined ? 'N/A' : teamCubeData[$(this).val()][4]) + `</button>
             <button class="btn btn-danger">Average Climb Rate (w/ Levitate): <span class="climb-rate-avg-lev"></span></button>
             <button class="btn btn-danger">Average Climb Rate (w/o Levitate): <span class="climb-rate-avg"></span></button>
             <button class="btn btn-warning view-pit" data-toggle="modal" data-target="#pit-modal">View Pit Data</button>
