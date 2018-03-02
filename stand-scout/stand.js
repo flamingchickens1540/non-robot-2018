@@ -19,6 +19,8 @@ scout.init('stand', true);
 // var notybluePlatform;
 // var notyredPlatform;
 // var notygiza;
+var cubeInfo = {};
+var cycleFile;
 var color;
 var time;
 var cycleTime;
@@ -48,15 +50,19 @@ var autoNoty = new noty({
   progressBar: true,
   type: "error"
 });
+var teamNum;
+var roleNum;
+var matchNum;
+var fileName;
+var file;
+setTimeout(function () {
+  teamNum = $('.role-team').text()
+  roleNum = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
+  matchNum = 'm' + $('.matchnum').val()
+  fileName = 'data/' + matchNum + '-' + roleNum + '-' + teamNum + '.json'
+}, 100);
 //save function
 function save(place) {
-  //var used to get array
-  var teamNum = $('.role-team').text()
-  var roleNum = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
-  var matchNum = 'm' + $('.matchnum').val()
-  var fileName = 'data/' + matchNum + '-' + roleNum + '-' + teamNum + '.json'
-  var jsoninfo = JSON.parse(fs.readFileSync(fileName))
-  //figuring out where the cube was put/taken from
   var jsonplace;
   if (place == 'redPortal1'||place == 'redPortal2') {
     jsonplace = 'redPortal'
@@ -71,15 +77,13 @@ function save(place) {
     jsonplace = place
   }
   //adding the cube to the place in the array
-  if (jsoninfo[jsonplace] == undefined) {
-    jsoninfo[jsonplace] = 1
+  if (cubeInfo[jsonplace] == undefined) {
+    cubeInfo[jsonplace] = 1
   }
   else {
-    jsoninfo[jsonplace] = parseInt(jsoninfo[jsonplace]) + 1
+    cubeInfo[jsonplace] = parseInt(cubeInfo[jsonplace]) + 1
   }
-  //resaving the JSON file as the new array
-  var newjson = JSON.stringify(jsoninfo)
-  fs.writeFileSync(fileName, newjson);
+  console.log(cubeInfo);
 }
 // var notyBluePortal1 = new Noty({
 //   type: 'success',
@@ -166,12 +170,12 @@ scout.radio(
     {
       text: 'Yes',
       color: 'success',
-      value: 'Line'
+      value: true
     },
     {
       text: 'No',
       color: 'danger',
-      value: 'noline'
+      value: false
     }
   ],
   'crossLine'
@@ -436,7 +440,7 @@ $(document).ready(function(){
       type: "success"
     });
     noty.show()
-    save(place)
+    save(place);
   })
   //rando helpful things - adding quotes
   var rando = Math.ceil(Math.random()*1640)
@@ -457,7 +461,8 @@ $(document).ready(function(){
     }
   })
   //working on cycle times and saving cycle times
-  if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json') == true) {
+  cycleFile = 'cycle/' + $('.role-team').text() + '-cycle.json'
+   if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json') == true) {
     fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
   }
   $('.getCube, .button-ground').click(function(){
@@ -530,9 +535,6 @@ $(document).ready(function(){
       fs.writeFileSync('cycle/manifest.json', '[]')
     }
     cycleManifest = JSON.parse(fs.readFileSync('cycle/manifest.json', 'utf8'))
-    for (var i = 0; i < cycleManifest.length; i++) {
-      cycleData.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i] + '.json', 'utf-8')));
-    }
   })
   $('.btn-back').click(function(){
     $('.btn-done').hide()
@@ -545,6 +547,22 @@ $(document).ready(function(){
       $('.thingy').append("<button class='btn btn-outline-success btn-done'>Done!</button>")
     }
     $('.btn-done').click(function(){
+      file = JSON.parse(fs.readFileSync(fileName, 'utf8'))
+      console.log(Object.keys(file).length, file);
+      for (var i in cubeInfo) {
+        if (cubeInfo.hasOwnProperty(i)) {
+          var m = Object.keys(file).length
+          var n = i
+          console.log(cubeInfo[i]);
+          file[n] = cubeInfo[i]
+        }
+      }
+      var newjson = JSON.stringify(file)
+      fs.writeFileSync(fileName, newjson);
+      var n = cycleManifest.length
+      cycleManifest[n] = cycleFile
+      var newManifest = JSON.stringify(cycleManifest)
+      fs.writeFileSync('cycle/manifest.json', newManifest)
       var matchNum = fs.readFileSync('scouting/match.txt', 'utf-8')
       var newMatchNum = parseInt(matchNum) + 1
       fs.writeFileSync('scouting/match.txt', newMatchNum)
@@ -666,7 +684,7 @@ scout.radio(
     value: 'nothing',
     class: 'no-climb'
   }],
-  'start',
+  'climb',
   true
 );
 scout.radio(
@@ -701,7 +719,8 @@ scout.radio(
     text: 'Nothing',
     color: 'danger',
     value: 'nothing'
-  }]
+  }],
+  'noclimb'
 )
 scout.textarea(
   '.cell-climb-2',
