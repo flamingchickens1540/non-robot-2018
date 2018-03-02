@@ -816,3 +816,4 @@ $('.btn-analysis-back').click(function () {
     $('.btn-match-schedule, .btn-team-lookup, .btn-projections, .btn-pit-data, .btn-rankings, .btn-picklist').removeClass('active');
   });
 });
+scout.import();
