@@ -544,9 +544,9 @@ function matchDisplay(a) {
               <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + tempNotes + `</td>
-              <td>` + (seventhNotes[index][0] == undefined ? 0 : seventhNotes[0][0]) + `</td>
-              <td>` + (seventhNotes[index][1] == undefined ? 0 : seventhNotes[0][1]) + `</td>
-              <td>` + (seventhNotes[index][2] == undefined ? 0 : seventhNotes[0][2]) + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
             </tr>
           `);
           index++;
@@ -816,7 +816,7 @@ $('.input-team-lookup > input').keydown(function () {
               break;
           }
           console.log(rankings, $('.lookup-team').text(), temp);
-          $('.analysis-tags').append('<button class="btn btn-outline-info">' + lookupTags[i] + ' - ' + rankings[$('.lookup-team').text()][temp][0] + '</button>&nbsp;&nbsp;&nbsp;');
+          $('.analysis-tags').append('<button class="btn btn-outline-info">' + lookupTags[i] + ' - ' + rankings[temp][$('.lookup-team').text()][0] + '</button>&nbsp;&nbsp;&nbsp;');
         };
         var lev = 0;
         var noLev = 0;
