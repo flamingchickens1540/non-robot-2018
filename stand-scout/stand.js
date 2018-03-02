@@ -157,7 +157,9 @@ scout.page(
 )
 scout.login(
   '.cell-login-2',
-  1540
+  1540,
+  true,
+  "scout"
 )
 //*************************************** Auto page
 scout.page(

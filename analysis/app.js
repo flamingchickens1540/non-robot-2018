@@ -72,13 +72,13 @@ var notes = [];
 for (var i = 0; i < notefest.length; i++) {
   notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
 };
-if (!fs.existsSync('seventh/')) {
-  fs.mkdirSync('seventh/');
+if (!fs.existsSync('match-data/')) {
+  fs.mkdirSync('match-data/');
 }
-var seventhfest = JSON.parse(fs.readFileSync('seventh/manifest.json', 'utf8'));
+var seventhfest = JSON.parse(fs.readFileSync('match-data/manifest.json', 'utf8'));
 var seventh = [];
 for (var i = 0; i < seventhfest.length; i++) {
-  seventh.push(JSON.parse(fs.readFileSync('seventh/' + seventhfest[i], 'utf8')));
+  seventh.push(JSON.parse(fs.readFileSync('match-data/' + seventhfest[i], 'utf8')));
   seventh[i].teams = sched[parseInt(seventh[i].match)];
 };
 // Functions
