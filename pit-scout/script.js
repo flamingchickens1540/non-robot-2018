@@ -7,7 +7,7 @@ scout.init('pit', true);
 
 // Home Page
 scout.page('Pit Scouting', [12]);
-scout.login('.cell-pit-scouting-1', 1540);
+scout.login('.cell-pit-scouting-1', 1540, true, 'scout');
 
 // Phone Number
 scout.page('Phone Number', [12]);
