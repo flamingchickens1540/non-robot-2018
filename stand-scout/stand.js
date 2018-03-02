@@ -462,8 +462,8 @@ $(document).ready(function(){
   })
   //working on cycle times and saving cycle times
   cycleFile = 'cycle/' + $('.role-team').text() + '-cycle.json'
-   if (!fs.existsSync('cycle/' + $('.role-team').text() + '-cycle.json') == true) {
-    fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleArray))
+   if (!fs.existsSync(cycleFile)) {
+    fs.writeFileSync(cycleFile, JSON.stringify(cycleArray))
   }
   $('.getCube, .button-ground').click(function(){
     time = new Date().getTime()

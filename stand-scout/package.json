@@ -14,6 +14,6 @@
   },
   "dependencies": {
     "fs-extra": "^5.0.0",
-    "scouting": "^2.0.6"
+    "scouting": "^2.0.8"
   }
 }
