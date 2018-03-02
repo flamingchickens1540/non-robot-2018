@@ -44,3 +44,4 @@ for (x=0;x<6;x++) {
 scout.page("Notes", [12]);
 scout.textarea(".notes","Notes (optional):","","notes");
 scout.done('.notes',false);
+scout.bluetooth();
