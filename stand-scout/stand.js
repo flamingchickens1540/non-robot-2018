@@ -737,3 +737,4 @@ scout.textarea(
   'This robot overall was...',
   'notes'
 )
+scout.bluetooth()

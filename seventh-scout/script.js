@@ -22,9 +22,9 @@ for (x=0;x<6;x++) {
   scout.radio(".cell-prematch-"+((x%3)+1),schedule[match][x],[{text:char+"1",color:clr},{text:char+"2",color:clr},{text:char+"3",color:clr}],'team-pos-'+x,true,undefined,false);
 }
 scout.page("Auto", [4,4,4]);
-scout.radio('.cell-auto-1','Close Red Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'leftswitch',true,undefined,false);
+scout.radio('.cell-auto-1','Close Red Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'redswitch',true,undefined,false);
 scout.radio('.cell-auto-2','Close Scale', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'scale',true,undefined,false);
-scout.radio('.cell-auto-3','Close Blue Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'rightswitch',true,undefined,false);
+scout.radio('.cell-auto-3','Close Blue Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'blueswitch',true,undefined,false);
 scout.page("Tele", [3,3,3,3]);
 scout.text(".cell-tele-1","Team:",25,undefined)
 scout.text(".cell-tele-2","Red Switch:",25,undefined)
@@ -37,10 +37,11 @@ for (x=0;x<6;x++) {
   }
   scout.text(".cell-tele-1",schedule[match][x],25,undefined,color)
   $(".cell-tele-1").append("<br style='height:40px'>");
-  scout.counter(".cell-tele-2","Red Switch","1","leftswitch-"+x,false,undefined,true);
+  scout.counter(".cell-tele-2","Red Switch","1","redswitch-"+x,false,undefined,true);
   scout.counter(".cell-tele-3","Scale","1","scale-"+x,false,undefined,true);
-  scout.counter(".cell-tele-4","Blue Switch","1","rightswitch-"+x,false,undefined,true);
+  scout.counter(".cell-tele-4","Blue Switch","1","blueswitch-"+x,false,undefined,true);
 }
 scout.page("Notes", [12]);
 scout.textarea(".notes","Notes (optional):","","notes");
 scout.done('.notes',false);
+scout.bluetooth();

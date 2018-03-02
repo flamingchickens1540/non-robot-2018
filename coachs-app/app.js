@@ -524,3 +524,4 @@ function lookupTeam(team) {
     $(".info-5").append(`<img class = "teamPicture"   src="`+ myString + `" alt="list image" width="210" height="280">  </img>`);
   }
 };
+scout.import();

@@ -72,6 +72,15 @@ var notes = [];
 for (var i = 0; i < notefest.length; i++) {
   notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
 };
+if (!fs.existsSync('seventh/')) {
+  fs.mkdirSync('seventh/');
+}
+var seventhfest = JSON.parse(fs.readFileSync('seventh/manifest.json', 'utf8'));
+var seventh = [];
+for (var i = 0; i < seventhfest.length; i++) {
+  seventh.push(JSON.parse(fs.readFileSync('seventh/' + seventhfest[i], 'utf8')));
+  seventh[i].teams = sched[parseInt(seventh[i].match)];
+};
 // Functions
 String.prototype.titleCase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
@@ -330,11 +339,18 @@ function parseExchange(a) {
 };
 function matchDisplay(a) {
   var tempNotes = [];
+  var seventhNotes = [];
+  var index = 0;
   for (var i = 0; i < notes.length; i++) {
     if (notes[i][$('.lookup-team').text()] != undefined) {
       tempNotes.push(' ' + notes[i][$('.lookup-team').text()]);
     }
   };
+  for (var i = 0; i < seventh.length; i++) {
+    var teamVal = seventh[i]['teams'].indexOf($('.lookup-team').text());
+    seventhNotes.push([teamVal <= 2 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal], seventh[i]['scale-' + teamVal], teamVal >= 3 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal]]);
+  };
+
   for (var i = 0; i < data.length; i++) {
     if (data[i].team == $('.lookup-team').text()) {
       switch (a) {
@@ -412,8 +428,12 @@ function matchDisplay(a) {
               <td>` + scouts[data[i].scout] + `</td>
               <td>` + data[i].notes + `</td>
               <td>` + tempNotes + `</td>
+              <td>` + (seventhNotes[index][0] == undefined ? 0 : seventhNotes[0][0]) + `</td>
+              <td>` + (seventhNotes[index][1] == undefined ? 0 : seventhNotes[0][1]) + `</td>
+              <td>` + (seventhNotes[index][2] == undefined ? 0 : seventhNotes[0][2]) + `</td>
             </tr>
           `);
+          index++;
           break;
       }
     }
@@ -609,6 +629,9 @@ $('.input-team-lookup > input').keydown(function () {
                   <th scope="col">Name</th>
                   <th scope="col">Stand App Notes</th>
                   <th scope="col">Notes App Notes</th>
+                  <th scope="col">Seventh Scout - Switch</th>
+                  <th scope="col">Seventh Scout - Scale</th>
+                  <th scope="col">Seventh Scout - Defense</th>
                 </tr>
               </thead>
               <tbody class="lookup-notes"></tbody>
@@ -793,3 +816,4 @@ $('.btn-analysis-back').click(function () {
     $('.btn-match-schedule, .btn-team-lookup, .btn-projections, .btn-pit-data, .btn-rankings, .btn-picklist').removeClass('active');
   });
 });
+scout.import();
