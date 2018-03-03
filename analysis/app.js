@@ -36,7 +36,8 @@ var data = [];
 var cycle = [];
 var manifest = JSON.parse(fs.readFileSync('data/manifest.json', 'utf8'));
 for (var i = 0; i < manifest.length; i++) {
-  data.push(JSON.parse(fs.readFileSync('data/' + manifest[i])));
+  try {
+  data.push(JSON.parse(fs.readFileSync('data/' + manifest[i])));} catch(_) {}
 };
 var cycleManifest = JSON.parse(fs.readFileSync('cycle/manifest.json', 'utf8'));
 for (var i = 0; i < cycleManifest.length; i++) {
@@ -107,6 +108,7 @@ function analyzeTags(a) {
   };
   matches = teamInfo.length;
   for (var i = 0; i < teamInfo.length; i++) {
+    if (teamInfo[i]['role']!=undefined){
     // BUG: tern this
     switching[i] =
       (isNaN(parseInt(teamInfo[i].switchAuto)) ? 0 : parseInt(teamInfo[i].switchAuto)) +
@@ -123,7 +125,7 @@ function analyzeTags(a) {
     exchanging[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].redExchange)) ? 0 : parseInt(teamInfo[i].redExchange)) : (isNaN(parseInt(teamInfo[i].blueExchange)) ? 0 : parseInt(teamInfo[i].blueExchange)));
     // exchanging[i] += parseInt(teamInfo[i].exchangeAuto);
     defending[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)) : (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)));
-    total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];
+    total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];}
   };
   for (var i = 0; i < switching.length; i++) {
     switchAvg += switching[i];
@@ -467,7 +469,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + data[i].switchAuto + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redSwitch : data[i].blueSwitch) + `</td>
             </tr>
@@ -477,7 +479,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].blueSwitch : data[i].redSwitch) + `</td>
             </tr>
           `);
@@ -493,7 +495,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPlatformCube : data[i].bluePlatformCube) + `</td>
               <td>` + data[i]['climb'] + '<br>(' + climbType + ')' + `</td>
               <td>` + (data[i].climbNotes == undefined ? 'None :(' : data[i].climbNotes) + `</td>
@@ -504,7 +506,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].bluePlatformCube) : parseExchange(data[i].redPlatformCube)) + `</td>
             </tr>
           `);
@@ -513,7 +515,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + data[i].scaleAuto + `</td>
               <td>` + data[i].scale + `</td>
             </tr>
@@ -523,7 +525,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].redExchange) : parseExchange(data[i].blueExchange)) + `</td>
             </tr>
           `);
@@ -532,7 +534,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPortal : data[i].bluePortal) + `</td>
             </tr>
           `);
@@ -541,7 +543,7 @@ function matchDisplay(a) {
           $('.lookup-' + a).append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + data[i].crossLine + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + tempNotes + `</td>
