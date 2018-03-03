@@ -546,7 +546,7 @@ function matchDisplay(a) {
               <td>` + "HI" + `</td>
               <td>` + data[i].crossLine + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
-              <td>` + tempNotes + `</td>
+              <td>` + tempNotes[index] + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
