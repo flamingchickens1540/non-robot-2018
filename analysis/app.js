@@ -67,26 +67,10 @@ for (var i = 0; i < pitfest.length; i++) {
 if (!fs.existsSync('notes/')) {
   fs.mkdirSync('notes/');
 }
-if (!fs.existsSync('notes-two/')) {
-  fs.mkdirSync('notes-two/');
-}
-if (!fs.existsSync('notes-three/')) {
-  fs.mkdirSync('notes-three/');
-}
 var notefest = JSON.parse(fs.readFileSync('notes/manifest.json', 'utf8'));
 var notes = [];
 for (var i = 0; i < notefest.length; i++) {
   notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
-};
-var notefest2 = JSON.parse(fs.readFileSync('notes/manifest.json', 'utf8'));
-var notes2 = [];
-for (var i = 0; i < notefest2.length; i++) {
-  notes2.push(JSON.parse(fs.readFileSync('notes-two/' + notefest[i], 'utf8')));
-};
-var notefest3 = JSON.parse(fs.readFileSync('notes/manifest.json', 'utf8'));
-var notes3 = [];
-for (var i = 0; i < notefest3.length; i++) {
-  notes3.push(JSON.parse(fs.readFileSync('notes-three/' + notefest[i], 'utf8')));
 };
 if (!fs.existsSync('match-data/')) {
   fs.mkdirSync('match-data/');
@@ -464,23 +448,11 @@ function parseExchange(a) {
 };
 function matchDisplay(a) {
   var tempNotes = [];
-  var tempNotes2 = [];
-  var tempNotes3 = [];
   var seventhNotes = [];
   var index = 0;
   for (var i = 0; i < notes.length; i++) {
     if (notes[i][$('.lookup-team').text()] != undefined) {
       tempNotes.push(' ' + notes[i][$('.lookup-team').text()]);
-    }
-  };
-  for (var i = 0; i < notes2.length; i++) {
-    if (notes2[i][$('.lookup-team').text()] != undefined) {
-      tempNotes2.push(' ' + notes2[i][$('.lookup-team').text()]);
-    }
-  };
-  for (var i = 0; i < notes3.length; i++) {
-    if (notes3[i][$('.lookup-team').text()] != undefined) {
-      tempNotes3.push(' ' + notes3[i][$('.lookup-team').text()]);
     }
   };
   for (var i = 0; i < seventh.length; i++) {
@@ -573,8 +545,6 @@ function matchDisplay(a) {
               <td>` + data[i].crossLine + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + tempNotes + `</td>
-              <td>` + tempNotes2 + `</td>
-              <td>` + tempNotes3 + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
@@ -777,8 +747,6 @@ $('.input-team-lookup > input').keydown(function () {
                   <th scope="col">Cross Line</th>
                   <th scope="col">Stand App Notes</th>
                   <th scope="col">Notes App Notes</th>
-                  <th scope="col">Notes App Notes 2</th>
-                  <th scope="col">Notes App Notes 3</th>
                   <th scope="col">Seventh Scout - Switch</th>
                   <th scope="col">Seventh Scout - Scale</th>
                   <th scope="col">Seventh Scout - Defense</th>
