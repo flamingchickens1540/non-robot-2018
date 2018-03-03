@@ -542,6 +542,7 @@ function matchDisplay(a) {
             <tr>
               <td>` + data[i].match + `</td>
               <td>` + scouts[JSON.parse(data[i]['scouts'])['scout']] + `</td>
+              <td>` + data[i].crossLine + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + tempNotes + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
@@ -743,6 +744,7 @@ $('.input-team-lookup > input').keydown(function () {
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
+                  <th scope="col">Cross Line</th>
                   <th scope="col">Stand App Notes</th>
                   <th scope="col">Notes App Notes</th>
                   <th scope="col">Seventh Scout - Switch</th>
@@ -768,7 +770,7 @@ $('.input-team-lookup > input').keydown(function () {
                       <div class="col-sm-4">`
                       + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
                       + card('Scale Auto', pit[$(this).val()]['scaleAuto'])
-                      + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb'].titleCase()))
+                      + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb']))
                       + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : prettifyArray(pit[$(this).val()]['cubeLoad'])))
                       + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                     + `</div>
