@@ -9,15 +9,6 @@ scout.init('pit', true);
 scout.page('Pit Scouting', [12]);
 scout.login('.cell-pit-scouting-1', 1540, true, 'scout');
 
-// Phone Number
-scout.page('Phone Number', [12]);
-scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
-scout.radio('.cell-phone-number-1', '',
-  [
-    {text: 'Mentor', color: 'info', value: 'Yep'},
-    {text: 'Student', color: 'info', value: 'Nope'}
-  ], 'occupation', true);
-
 // Auto
 scout.page('Auto', [4, 4, 4]);
 scout.radio('.cell-auto-1', 'Switch',
@@ -191,6 +182,15 @@ $(document).ready(function () {
 });
 scout.page('Notes', [12]);
 scout.textarea('.cell-notes-1', 'Notes', 'Notes...', 'notes', true);
+
+// Phone Number
+scout.page('Phone Number', [12]);
+scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
+scout.radio('.cell-phone-number-1', '',
+  [
+    {text: 'Mentor', color: 'info', value: 'Yep'},
+    {text: 'Student', color: 'info', value: 'Nope'}
+  ], 'occupation', true);
 
 // Photo
 scout.page('Photo and Finish', [12]);
