@@ -205,4 +205,4 @@ $('.cell-photo-and-finish-1').append(`
   </ol>
 `);
 scout.done('.cell-photo-and-finish-1', true);
-scout.bluetooth();
+scout.flashdrive();

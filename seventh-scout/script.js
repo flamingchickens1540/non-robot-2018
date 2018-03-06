@@ -21,10 +21,9 @@ for (x=0;x<6;x++) {
   }
   scout.radio(".cell-prematch-"+((x%3)+1),schedule[match][x],[{text:char+"1",color:clr},{text:char+"2",color:clr},{text:char+"3",color:clr}],'team-pos-'+x,true,undefined,false);
 }
-scout.page("Auto", [4,4,4]);
-scout.radio('.cell-auto-1','Close Red Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'redswitch',true,undefined,false);
+scout.page("Auto", [6,6]);
+scout.radio('.cell-auto-1','Close Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'switch',true,undefined,false);
 scout.radio('.cell-auto-2','Close Scale', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'scale',true,undefined,false);
-scout.radio('.cell-auto-3','Close Blue Switch', [{text:"Red",color:"danger"},{text:"Blue",color:"primary"}],'blueswitch',true,undefined,false);
 scout.page("Tele", [3,3,3,3]);
 scout.text(".cell-tele-1","Team:",25,undefined)
 scout.text(".cell-tele-2","Red Switch:",25,undefined)
@@ -44,4 +43,4 @@ for (x=0;x<6;x++) {
 scout.page("Notes", [12]);
 scout.textarea(".notes","Notes (optional):","","notes");
 scout.done('.notes',false);
-scout.bluetooth();
+scout.flashdrive();
