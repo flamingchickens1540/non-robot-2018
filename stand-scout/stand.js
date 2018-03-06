@@ -561,8 +561,8 @@ $(document).ready(function(){
       }
       var newjson = JSON.stringify(file)
       fs.writeFileSync(fileName, newjson);
-      var n = cycleManifest.length
-      cycleManifest[n] = cycleFile
+      var cycleManifest = JSON.parse(fs.readFileSync("cycle/manifest.json"))
+      cycleManifest.push(cycleFile);
       var newManifest = JSON.stringify(cycleManifest)
       fs.writeFileSync('cycle/manifest.json', newManifest)
       var matchNum = fs.readFileSync('scouting/match.txt', 'utf-8')
@@ -739,4 +739,4 @@ scout.textarea(
   'This robot overall was...',
   'notes'
 )
-scout.bluetooth()
+scout.flashdrive()
