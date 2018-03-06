@@ -4,6 +4,8 @@ scout.init('match',true)
 scout.page("Login", [12])
 scout.login(".login","1540",true,"scout")
 scout.page("Prematch", [4,4,4])
+scout.text(".prematch","Based on robot placement, not drive station location.",20);
+scout.text(".prematch","Top-left: 1, mid-left: 2, bottom-left: 3, bottom-right: 1, mid-right: 2, top-right: 1",15)
 var schedule;
 var match;
 if (fs.existsSync('scouting/schedule.json')) {
