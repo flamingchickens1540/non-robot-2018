@@ -224,19 +224,18 @@ scout.page(
     }
     else if (buttons[i].indexOf("giza") == 0) {
       if ($('.role-name').text().indexOf("Blue") == 0){
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 5vh; width: 8vw; font-size: 1.25vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
       else{
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 3.5vh; width: 6.5vw; font-size: .9vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 5vh; width: 8vw; font-size: 1.25vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
     }
     else {
       $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-scale" data-num="' + i + '"" data-place="' + buttons[i] + '">Scale</button>')
     }
   }
-  $('.cell-teleop-1').append(`
-    <button type="button" class="btn btn-success btn-small button-ground"> Cube From Ground </button>
-    `)
+  $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-ground">Cube From Ground</button>');
+  $('.cell-teleop-1').append('<button type="button" class="btn btn-success btn-small button-drop">Dropped Cube</button>');
   // if ($('.role-name').text().indexOf("Blue") == 0) {
   //   $('.cell-teleop-1').append(`
   //     <img src="ArcadeBlue.png" style="width: 80vw; height: 60vh;" usemap="#arcadeblue" class="arcade img-fluid">
@@ -427,6 +426,17 @@ $(document).ready(function(){
       type: "success"
     });
     noty.show()
+  })
+  $('.button-drop').click(function(){
+    var noty = new Noty({
+      text: "Cube was dropped by the robot",
+      layout: "topRight",
+      timeout: 2500,
+      progressBar: true,
+      type: "success"
+    });
+    noty.show()
+    save('droppedCube')
   })
   $('.getCube, .giveCube').click(function(){
     var place = $(this).attr('data-place')

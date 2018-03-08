@@ -31,97 +31,105 @@
   position: relative;
   left: 38vw;
   top: 38.5vh;
-  height: 3.5vh;
-  width: 4vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 5vw;
+  font-size: 1.25vw;
 }
 .button-bluePortal1{
   position: relative;
-  left: -2.5vw;
+  left: -4.5vw;
   top: 12.5vh;
-  height: 3.5vh;
-  font-size: .9vw;
-  width: 7.5vw;
+  height: 5vh;
+  font-size: 1.25vw;
+  width: 9vw;
 }
 .button-redPortal1{
   position: relative;
-  left: 52vw;
+  left: 47.5vw;
   top: 12.5vh;
-  height: 3.5vh;
-  font-size: .9vw;
-  width: 7.5vw;
+  height: 5vh;
+  font-size: 1.25vw;
+  width: 9vw;
 }
 .button-bluePortal2{
   position: relative;
-  left: -10vw;
+  left: -13vw;
   top: 63.5vh;
-  height: 3.5vh;
-  font-size: .9vw;
-  width: 7.5vw;
+  height: 5vh;
+  font-size: 1.25vw;
+  width: 9vw;
 }
 .button-redPortal2{
   position: relative;
-  left: 44.5vw;
+  left: 38.5vw;
   top: 63.5vh;
-  height: 3.5vh;
-  width: 7.5vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 9vw;
+  font-size: 1.25vw;
 }
 .button-blueSwitch{
   position: relative;
-  left: 17vw;
+  left: 9vw;
   top: 51.5vh;
-  height: 3.5vh;
-  width: 6.5vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 8.5vw;
+  font-size: 1.25vw;
 }
 .button-redSwitch{
   position: relative;
-  left: -18vw;
+  left: -27vw;
   top: 51.5vh;
-  height: 3.5vh;
-  width: 6.5vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 8.5vw;
+  font-size: 1.25vw;
 }
 .button-redExchange{
   position: relative;
-  left: -52.5vw;
+  left: -67.5vw;
   top: 32.5vh;
-  height: 3.5vh;
-  width: 8vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 10vw;
+  font-size: 1.25vw;
 }
 .button-blueExchange{
   position: relative;
-  left: 22.5vw;
+  left: 11.5vw;
   top: 43.5vh;
-  height: 3.5vh;
-  width: 8vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 10.1vw;
+  font-size: 1.25vw;
 }
 .button-redPlatform{
   position: relative;
-  left: -41.5vw;
+  left: -59.5vw;
   top: 28vh;
-  height: 3.5vh;
-  width: 7vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 9vw;
+  font-size: 1.25vw;
 }
 .button-bluePlatform{
   position: relative;
-  left: -18.5vw;
+  left: -35.5vw;
   top: 28vh;
-  height: 3.5vh;
-  width: 7vw;
-  font-size: .9vw;
+  height: 5vh;
+  width: 9.5vw;
+  font-size: 1.25vw;
 }
 .button-ground{
   position: relative;
-  left: -42vw;
-  top: 60vh;
-  height: 3.5vh;
-  width: 10vw;
-  font-size: .9vw;
+  left: 34vw;
+  top: 55vh;
+  height: 5vh;
+  width: 13vw;
+  font-size: 1.25vw;
+}
+.button-drop{
+  position: relative;
+  left: 22vw;
+  top: 10vh;
+  height: 5vh;
+  width: 10.5vw;
+  font-size: 1.25vw;
 }
 .body-div-teleop hr{
   display: none;
@@ -131,4 +139,7 @@
 }
 .modal-header{
   text-align: center;
+}
+.nav-btns{
+  margin-top: 8vh;
 }
