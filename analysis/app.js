@@ -36,11 +36,12 @@ var data = [];
 var cycle = [];
 var manifest = JSON.parse(fs.readFileSync('data/manifest.json', 'utf8'));
 for (var i = 0; i < manifest.length; i++) {
-  data.push(JSON.parse(fs.readFileSync('data/' + manifest[i])));
+  try {
+  data.push(JSON.parse(fs.readFileSync('data/' + manifest[i])));} catch(_) {}
 };
 var cycleManifest = JSON.parse(fs.readFileSync('cycle/manifest.json', 'utf8'));
 for (var i = 0; i < cycleManifest.length; i++) {
-  cycle.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i])));
+  cycle.push(JSON.parse(fs.readFileSync(cycleManifest[i])));
 };
 fs.existsSync('export/') ? '' : fs.mkdirSync('export/');
 fs.existsSync('resources/') ? '' : fs.mkdirSync('resources/');
@@ -72,13 +73,13 @@ var notes = [];
 for (var i = 0; i < notefest.length; i++) {
   notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
 };
-if (!fs.existsSync('seventh/')) {
-  fs.mkdirSync('seventh/');
+if (!fs.existsSync('match-data/')) {
+  fs.mkdirSync('match-data/');
 }
-var seventhfest = JSON.parse(fs.readFileSync('seventh/manifest.json', 'utf8'));
+var seventhfest = JSON.parse(fs.readFileSync('match-data/manifest.json', 'utf8'));
 var seventh = [];
 for (var i = 0; i < seventhfest.length; i++) {
-  seventh.push(JSON.parse(fs.readFileSync('seventh/' + seventhfest[i], 'utf8')));
+  seventh.push(JSON.parse(fs.readFileSync('match-data/' + seventhfest[i], 'utf8')));
   seventh[i].teams = sched[parseInt(seventh[i].match)];
 };
 // Functions
@@ -107,21 +108,24 @@ function analyzeTags(a) {
   };
   matches = teamInfo.length;
   for (var i = 0; i < teamInfo.length; i++) {
+    if (teamInfo[i]['role']!=undefined){
+    // BUG: tern this
     switching[i] =
-      parseInt(teamInfo[i].switchAuto) +
-      (teamInfo[i]['role'].indexOf('r') >= 0 ? parseInt(teamInfo[i].redSwitch) : parseInt(teamInfo[i].blueSwitch));
+      (isNaN(parseInt(teamInfo[i].switchAuto)) ? 0 : parseInt(teamInfo[i].switchAuto)) +
+      (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)) : (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)));
     scaling[i] =
-      parseInt(teamInfo[i].scaleAuto) +
-      parseInt(teamInfo[i].scale);
-    exchanging[i] = 0;
-    for (var j = 0; j < (teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i].redExchange : teamInfo[i].blueExchange).length; j++) {
-      if ((teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i]['redExchange'][j] : teamInfo[i]['blueExchange'][j]) == 'place') {
-        exchanging[i]++;
-      }
-    }
-    exchanging[i] += parseInt(teamInfo[i].exchangeAuto);
-    defending[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? parseInt(teamInfo[i].blueSwitch) : parseInt(teamInfo[i].redSwitch));
-    total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];
+      (isNaN(parseInt(teamInfo[i].scaleAuto)) ? 0 : parseInt(teamInfo[i].scaleAuto)) +
+      (isNaN(parseInt(teamInfo[i].scale)) ? 0 : parseInt(teamInfo[i].scale));
+    // exchanging[i] = 0;
+    // for (var j = 0; j < (teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i].redExchange : teamInfo[i].blueExchange).length; j++) {
+    //   if ((teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i]['redExchange'][j] : teamInfo[i]['blueExchange'][j]) == 'place') {
+    //     exchanging[i]++;
+    //   }
+    // }
+    exchanging[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].redExchange)) ? 0 : parseInt(teamInfo[i].redExchange)) : (isNaN(parseInt(teamInfo[i].blueExchange)) ? 0 : parseInt(teamInfo[i].blueExchange)));
+    // exchanging[i] += parseInt(teamInfo[i].exchangeAuto);
+    defending[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)) : (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)));
+    total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];}
   };
   for (var i = 0; i < switching.length; i++) {
     switchAvg += switching[i];
@@ -167,109 +171,215 @@ function getTags(a) {
   return tags[a];
 };
 function analyzeRank() {
- var teamCycleAvg = {};
- var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
- var switchers = [];
- var scalers = [];
- var exchangers = [];
- var defenders = [];
- var newAvg = {};
- for (var i = 0; i < cycle.length; i++) {
-   var avg = {};
-   for (var attr in cycle[i]) {
-     if (cycle[i].hasOwnProperty(attr)) {
-       if (attr != 'team') {
-         avg[attr] = 0;
-         for (var j = 0; j < cycle[i][attr].length; j++) {
-           avg[attr] += cycle[i][attr][j];
-           if (j + 1 == cycle[i][attr].length) {
-             avg[attr] /= j + 1;
-           }
+   var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+   var ranking = {
+     'switch': {},
+     'scale': {},
+     'exchange': {},
+     'defense': {},
+     'futz': []
+   };
+   for (var team in tags) {
+     if (tags.hasOwnProperty(team)) {
+       if (tags[team].length > 0) {
+         for (var i = 0; i < tags[team].length; i++) {
+           temp = 0;
+           switch (tags[team][i]) {
+             case 'Switcher':
+               for (var j = 0; j < data.length; j++) {
+                 if (data[j].team == team) {
+                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0) : (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0));
+                 }
+               };
+               ranking['switch'][team] = [1, temp];
+               break;
+             case 'Scaler':
+               for (var j = 0; j < data.length; j++) {
+                 if (data[j].team == team) {
+                   temp += data[j]['scale'] == undefined ? 0 : (data[j]['scale']);
+                 }
+               };
+               ranking['scale'][team] = [1, temp];
+               break;
+             case 'Exchanger':
+               for (var j = 0; j < data.length; j++) {
+                 if (data[j].team == team) {
+                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redExchange'] != undefined ? data[j]['redExchange'] : 0) : (data[j]['blueExchange'] != undefined ? data[j]['blueExchange'] : 0));
+                 }
+               };
+               ranking['exchange'][team] = [1, temp];
+               break;
+             case 'Defender':
+               for (var j = 0; j < data.length; j++) {
+                 if (data[j].team == team) {
+                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0) : (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0));
+                 }
+               };
+               ranking['defense'][team] = [1, temp];
+               break;
+           };
          };
+       } else {
+         ranking['futz'].push(team);
        }
+       for (var info in ranking['switch']) {
+         if (ranking['switch'].hasOwnProperty(info)) {
+           rank = 1;
+           teamList = Object.keys(ranking['switch']);
+           for (var i = 0; i < teamList.length; i++) {
+             if (ranking['switch'][info][1] < ranking['switch'][teamList[i]][1]) {
+               rank++;
+             }
+           };
+           ranking['switch'][info][0] = rank;
+         }
+       };
+       for (var info in ranking['scale']) {
+         if (ranking['scale'].hasOwnProperty(info)) {
+           rank = 1;
+           teamList = Object.keys(ranking['scale']);
+           for (var i = 0; i < teamList.length; i++) {
+             if (ranking['scale'][info][1] < ranking['scale'][teamList[i]][1]) {
+               rank++;
+             }
+           };
+           ranking['scale'][info][0] = rank;
+         }
+       };
+       for (var info in ranking['exchange']) {
+         if (ranking['exchange'].hasOwnProperty(info)) {
+           rank = 1;
+           teamList = Object.keys(ranking['exchange']);
+           for (var i = 0; i < teamList.length; i++) {
+             if (ranking['exchange'][info][1] < ranking['exchange'][teamList[i]][1]) {
+               rank++;
+             }
+           };
+           ranking['exchange'][info][0] = rank;
+         }
+       };
+       for (var info in ranking['defense']) {
+         if (ranking['defense'].hasOwnProperty(info)) {
+           rank = 1;
+           teamList = Object.keys(ranking['defense']);
+           for (var i = 0; i < teamList.length; i++) {
+             if (ranking['defense'][info][1] < ranking['defense'][teamList[i]][1]) {
+               rank++;
+             }
+           };
+           ranking['defense'][info][0] = rank;
+         }
+       };
      }
    };
-   teamCycleAvg[cycle[i].team] = avg;
- };
- for (var team in teamCycleAvg) {
-   if (teamCycleAvg.hasOwnProperty(team)) {
-     for (var tag in teamCycleAvg[team]) {
-       if (teamCycleAvg[team].hasOwnProperty(tag)) {
-         newAvg[team] = newAvg[team] == undefined ? {} : newAvg[team];
-         switch (tag) {
-           case 'switch':
-             if (tags[team].indexOf('Switcher') >= 0) {
-               switchers.push(teamCycleAvg[team]['switch']);
-               newAvg[team]['switch'] = teamCycleAvg[team]['switch'];
-             }
-             break;
-           case 'scale':
-             if (tags[team].indexOf('Scaler') >= 0) {
-               scalers.push(teamCycleAvg[team]['scale']);
-               newAvg[team]['scale'] = teamCycleAvg[team]['scale'];
-             }
-             break;
-           case 'exchange':
-             if (tags[team].indexOf('Exchanger') >= 0) {
-               exchangers.push(teamCycleAvg[team]['exchange']);
-               newAvg[team]['exchange'] = teamCycleAvg[team]['exchange'];
-             }
-             break;
-           case 'defense':
-             if (tags[team].indexOf('Defender') >= 0) {
-               defenders.push(teamCycleAvg[team]['defense']);
-               newAvg[team]['defense'] = teamCycleAvg[team]['defense'];
-             }
-             break;
-         };
-       }
-     };
-   }
- };
- switchers.sort(function (a, b) {return a - b;});
- scalers.sort(function (a, b) {return a - b;});
- exchangers.sort(function (a, b) {return a - b;});
- defenders.sort(function (a, b) {return a - b;});
- for (var team in newAvg) {
-   if (newAvg.hasOwnProperty(team)) {
-     for (var tag in newAvg[team]) {
-       if (newAvg[team].hasOwnProperty(tag)) {
-         switch (tag) {
-           case 'switch':
-             for (var i = 0; i < switchers.length; i++) {
-               if (switchers[i] == newAvg[team]['switch']) {
-                 newAvg[team]['switch'] = [i + 1, newAvg[team]['switch']];
-               }
-             };
-             break;
-           case 'scale':
-             for (var i = 0; i < scalers.length; i++) {
-               if (scalers[i] == newAvg[team]['scale']) {
-                 newAvg[team]['scale'] = [i + 1, newAvg[team]['scale']];
-               }
-             };
-             break;
-           case 'exchange':
-             for (var i = 0; i < exchangers.length; i++) {
-               if (exchangers[i] == newAvg[team]['exchange']) {
-                 newAvg[team]['exchange'] = [i + 1, newAvg[team]['exchange']];
-               }
-             };
-             break;
-           case 'defense':
-             for (var i = 0; i < defenders.length; i++) {
-               if (defenders[i] == newAvg[team]['defense']) {
-                 newAvg[team]['defense'] = [i + 1, newAvg[team]['defense']];
-               }
-             };
-             break;
-         };
-       }
-     };
-   }
- };
- return newAvg;
+   fs.writeFileSync('export/rankings.json', JSON.stringify(ranking));
+   return ranking;
 };
+// function analyzeRank() {
+//  var teamCycleAvg = {};
+//  var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+//  var switchers = [];
+//  var scalers = [];
+//  var exchangers = [];
+//  var defenders = [];
+//  var newAvg = {};
+//  for (var i = 0; i < cycle.length; i++) {
+//    var avg = {};
+//    for (var attr in cycle[i]) {
+//      if (cycle[i].hasOwnProperty(attr)) {
+//        if (attr != 'team') {
+//          avg[attr] = 0;
+//          for (var j = 0; j < cycle[i][attr].length; j++) {
+//            avg[attr] += cycle[i][attr][j];
+//            if (j + 1 == cycle[i][attr].length) {
+//              avg[attr] /= j + 1;
+//            }
+//          };
+//        }
+//      }
+//    };
+//    teamCycleAvg[cycle[i].team] = avg;
+//  };
+//  for (var team in teamCycleAvg) {
+//    if (teamCycleAvg.hasOwnProperty(team)) {
+//      for (var tag in teamCycleAvg[team]) {
+//        if (teamCycleAvg[team].hasOwnProperty(tag)) {
+//          newAvg[team] = newAvg[team] == undefined ? {} : newAvg[team];
+//          switch (tag) {
+//            case 'redswitch':
+//              if (tags[team].indexOf('Switcher') >= 0) {
+//                switchers.push(teamCycleAvg[team]['switch']);
+//                newAvg[team]['switch'] = teamCycleAvg[team]['switch'];
+//              }
+//              break;
+//            case 'scale':
+//              if (tags[team].indexOf('Scaler') >= 0) {
+//                scalers.push(teamCycleAvg[team]['scale']);
+//                newAvg[team]['scale'] = teamCycleAvg[team]['scale'];
+//              }
+//              break;
+//            case 'exchange':
+//              if (tags[team].indexOf('Exchanger') >= 0) {
+//                exchangers.push(teamCycleAvg[team]['exchange']);
+//                newAvg[team]['exchange'] = teamCycleAvg[team]['exchange'];
+//              }
+//              break;
+//            case 'blueswitch':
+//              if (tags[team].indexOf('Defender') >= 0) {
+//                defenders.push(teamCycleAvg[team]['blueswitch']);
+//                newAvg[team]['defense'] = teamCycleAvg[team]['blueswitch'];
+//              }
+//              break;
+//          };
+//        }
+//      };
+//    }
+//  };
+//  switchers.sort(function (a, b) {return a - b;});
+//  scalers.sort(function (a, b) {return a - b;});
+//  exchangers.sort(function (a, b) {return a - b;});
+//  defenders.sort(function (a, b) {return a - b;});
+//  for (var team in newAvg) {
+//    if (newAvg.hasOwnProperty(team)) {
+//      for (var tag in newAvg[team]) {
+//        if (newAvg[team].hasOwnProperty(tag)) {
+//          switch (tag) {
+//            case 'switch':
+//              for (var i = 0; i < switchers.length; i++) {
+//                if (switchers[i] == newAvg[team]['switch']) {
+//                  newAvg[team]['switch'] = [i + 1, newAvg[team]['switch']];
+//                }
+//              };
+//              break;
+//            case 'scale':
+//              for (var i = 0; i < scalers.length; i++) {
+//                if (scalers[i] == newAvg[team]['scale']) {
+//                  newAvg[team]['scale'] = [i + 1, newAvg[team]['scale']];
+//                }
+//              };
+//              break;
+//            case 'exchange':
+//              for (var i = 0; i < exchangers.length; i++) {
+//                if (exchangers[i] == newAvg[team]['exchange']) {
+//                  newAvg[team]['exchange'] = [i + 1, newAvg[team]['exchange']];
+//                }
+//              };
+//              break;
+//            case 'defense':
+//              for (var i = 0; i < defenders.length; i++) {
+//                if (defenders[i] == newAvg[team]['defense']) {
+//                  newAvg[team]['defense'] = [i + 1, newAvg[team]['defense']];
+//                }
+//              };
+//              break;
+//          };
+//        }
+//      };
+//    }
+//  };
+//  fs.writeFileSync('export/rankings.json', JSON.stringify(newAvg));
+//  return newAvg;
+// };
 function displayRank(a, b) {
   var index = 0;
   $('.cell-rankings-' + b).append(`
@@ -280,14 +390,14 @@ function displayRank(a, b) {
           <th>Team</th>
         </tr>
       </thead>
-      <tbody class="` + a + `-tbody"></tbody>
+      <tbody class="` + a + `-tbody-1"></tbody>
     </table>
   `);
   for (var i = 0; i < totTeams.length; i++) {
-    for (var team in rankings) {
-      if (rankings.hasOwnProperty(team)) {
-        if (rankings[team][a] != undefined && rankings[team][a][0] == i + 1) {
-          $('.' + a + '-tbody').append(`
+    for (var team in rankings[a]) {
+      if (rankings[a].hasOwnProperty(team)) {
+        if (rankings[a][team] != undefined && rankings[a][team][0] == i + 1) {
+          $('.' + a + '-tbody-1').append(`
             <tr>
               <td>` + (i + 1) + `</td>
               <td>` + team + `</td>
@@ -326,16 +436,17 @@ function modal(a, b, c) {
   `);
 };
 function parseExchange(a) {
-  var load = 0;
-  var place = 0;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] == 'load') {
-      load[i]++;
-    } else {
-      place++;
-    }
-  };
-  return 'Load: ' + load + ', Place: ' + place;
+  // var load = 0;
+  // var place = 0;
+  // for (var i = 0; i < a.length; i++) {
+  //   if (a[i] == 'load') {
+  //     load[i]++;
+  //   } else {
+  //     place++;
+  //   }
+  // };
+  // return 'Load: ' + load + ', Place: ' + place;
+  return a;
 };
 function matchDisplay(a) {
   var tempNotes = [];
@@ -358,7 +469,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + data[i].switchAuto + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redSwitch : data[i].blueSwitch) + `</td>
             </tr>
@@ -368,19 +479,26 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].blueSwitch : data[i].redSwitch) + `</td>
             </tr>
           `);
           break;
         case 'hplatform':
+          var climbType;
+          if (data[i]['assist'] != undefined) {
+            climbType = 'Assist: ' + JSON.parse(data[i]['assist']);
+          }
+          if (data[i]['noclimb'] != undefined) {
+            climbType = 'No Climb: ' + data[i]['noclimb'];
+          }
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPlatformCube : data[i].bluePlatformCube) + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i]['redPlatform'].titleCase() : data[i]['bluePlatform'].titleCase()) + `</td>
-              <td>` + data[i].climbNotes + `</td>
+              <td>` + data[i]['climb'] + '<br>(' + climbType + ')' + `</td>
+              <td>` + (data[i].climbNotes == undefined ? 'None :(' : data[i].climbNotes) + `</td>
             </tr>
           `);
           break;
@@ -388,7 +506,8 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].bluePlatformCube) : parseExchange(data[i].redPlatformCube)) + `</td>
             </tr>
           `);
           break;
@@ -396,7 +515,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + data[i].scaleAuto + `</td>
               <td>` + data[i].scale + `</td>
             </tr>
@@ -406,8 +525,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
-              <td>` + data[i].exchangeAuto + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].redExchange) : parseExchange(data[i].blueExchange)) + `</td>
             </tr>
           `);
@@ -416,7 +534,7 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
+              <td>` + "HI" + `</td>
               <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPortal : data[i].bluePortal) + `</td>
             </tr>
           `);
@@ -425,12 +543,13 @@ function matchDisplay(a) {
           $('.lookup-' + a).append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + scouts[data[i].scout] + `</td>
-              <td>` + data[i].notes + `</td>
-              <td>` + tempNotes + `</td>
-              <td>` + (seventhNotes[index][0] == undefined ? 0 : seventhNotes[0][0]) + `</td>
-              <td>` + (seventhNotes[index][1] == undefined ? 0 : seventhNotes[0][1]) + `</td>
-              <td>` + (seventhNotes[index][2] == undefined ? 0 : seventhNotes[0][2]) + `</td>
+              <td>` + "HI" + `</td>
+              <td>` + data[i].crossLine + `</td>
+              <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
+              <td>` + tempNotes[index] + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
+              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
             </tr>
           `);
           index++;
@@ -616,7 +735,7 @@ $('.input-team-lookup > input').keydown(function () {
               <area class="lookup-scale" shape="rect" coords="580, 280, 648, 319" data-toggle="modal" data-target="#scale">
               ` + modal('scale', true) + `
               <area class="lookup-exchange" shape="rect" coords="108, 187, 266, 225" data-toggle="modal" data-target="#exchange">
-              ` + modal('exchange', true) + `
+              ` + modal('exchange',) + `
               <area class="lookup-portal" shape="rect" coords="1103, 24, 1174, 64" data-toggle="modal" data-target="#portal">
               ` + modal('portal', false) + `
             </map>
@@ -627,6 +746,7 @@ $('.input-team-lookup > input').keydown(function () {
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Name</th>
+                  <th scope="col">Cross Line</th>
                   <th scope="col">Stand App Notes</th>
                   <th scope="col">Notes App Notes</th>
                   <th scope="col">Seventh Scout - Switch</th>
@@ -638,7 +758,7 @@ $('.input-team-lookup > input').keydown(function () {
             </table>
             <br>
             <br>
-            <button class="btn btn-danger">Average Cubes: ` + teamCubeData[$(this).val()][4] + `</button>
+            <button class="btn btn-danger">Average Cubes: ` + (teamCubeData[$(this).val()] == undefined ? 'N/A' : teamCubeData[$(this).val()][4]) + `</button>
             <button class="btn btn-danger">Average Climb Rate (w/ Levitate): <span class="climb-rate-avg-lev"></span></button>
             <button class="btn btn-danger">Average Climb Rate (w/o Levitate): <span class="climb-rate-avg"></span></button>
             <button class="btn btn-warning view-pit" data-toggle="modal" data-target="#pit-modal">View Pit Data</button>
@@ -652,7 +772,7 @@ $('.input-team-lookup > input').keydown(function () {
                       <div class="col-sm-4">`
                       + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
                       + card('Scale Auto', pit[$(this).val()]['scaleAuto'])
-                      + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb'].titleCase()))
+                      + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb']))
                       + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : prettifyArray(pit[$(this).val()]['cubeLoad'])))
                       + card('Exchange Auto', pit[$(this).val()]['exchangeAuto'])
                     + `</div>
@@ -699,7 +819,8 @@ $('.input-team-lookup > input').keydown(function () {
               temp = 'defense'
               break;
           }
-          $('.analysis-tags').append('<button class="btn btn-outline-info">' + lookupTags[i] + ' - ' + rankings[$('.lookup-team').text()][temp][0] + '</button>&nbsp;&nbsp;&nbsp;');
+          console.log(rankings, $('.lookup-team').text(), temp);
+          $('.analysis-tags').append('<button class="btn btn-outline-info">' + lookupTags[i] + ' - ' + rankings[temp][$('.lookup-team').text()][0] + '</button>&nbsp;&nbsp;&nbsp;');
         };
         var lev = 0;
         var noLev = 0;

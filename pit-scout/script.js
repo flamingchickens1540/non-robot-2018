@@ -7,16 +7,7 @@ scout.init('pit', true);
 
 // Home Page
 scout.page('Pit Scouting', [12]);
-scout.login('.cell-pit-scouting-1', 1540);
-
-// Phone Number
-scout.page('Phone Number', [12]);
-scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
-scout.radio('.cell-phone-number-1', '',
-  [
-    {text: 'Mentor', color: 'info', value: 'Yep'},
-    {text: 'Student', color: 'info', value: 'Nope'}
-  ], 'occupation', true);
+scout.login('.cell-pit-scouting-1', 1540, true, 'scout');
 
 // Auto
 scout.page('Auto', [4, 4, 4]);
@@ -192,6 +183,15 @@ $(document).ready(function () {
 scout.page('Notes', [12]);
 scout.textarea('.cell-notes-1', 'Notes', 'Notes...', 'notes', true);
 
+// Phone Number
+scout.page('Phone Number', [12]);
+scout.input('.cell-phone-number-1', 'Drive Coach/Strategy Manager\'s Phone Number', '503-867-5309', 'phone');
+scout.radio('.cell-phone-number-1', '',
+  [
+    {text: 'Mentor', color: 'info', value: 'Yep'},
+    {text: 'Student', color: 'info', value: 'Nope'}
+  ], 'occupation', true);
+
 // Photo
 scout.page('Photo and Finish', [12]);
 scout.text('.cell-photo-and-finish-1', 'Remember to take a 📸 of the 🤖!', 64);
@@ -205,4 +205,4 @@ $('.cell-photo-and-finish-1').append(`
   </ol>
 `);
 scout.done('.cell-photo-and-finish-1', true);
-scout.bluetooth();
+scout.flashdrive();

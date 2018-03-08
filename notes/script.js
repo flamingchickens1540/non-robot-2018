@@ -8,6 +8,7 @@ if (!fs.existsSync('scouting/matchNum.txt')) {
   fs.writeFileSync('scouting/matchNum.txt', 1);
 }
 var matchNum = JSON.parse(fs.readFileSync('scouting/matchNum.txt', 'utf8'));
+$("body").append(`<h3 style='position:absolute;right:10px;top:5px'>Match: `+matchNum+`</h3>`)
 scout.init('blank', true);
 scout.page('Match Notes', [6, 6]);
 scout.textarea('.cell-match-notes-1', 'Red 1: ' + sched[matchNum][0], 'Type here...', sched[matchNum][0]);
@@ -17,7 +18,6 @@ scout.textarea('.cell-match-notes-2', 'Blue 1: ' + sched[matchNum][3], 'Type her
 scout.textarea('.cell-match-notes-2', 'Blue 2: ' + sched[matchNum][4], 'Type here...', sched[matchNum][4]);
 scout.textarea('.cell-match-notes-2', 'Blue 3: ' + sched[matchNum][5], 'Type here...', sched[matchNum][5]);
 scout.done('.cell-match-notes-1', false);
-
 $('.scout-t')
   .each(function () {
     textareaCount++;
