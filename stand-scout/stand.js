@@ -83,7 +83,6 @@ function save(place) {
   else {
     cubeInfo[jsonplace] = parseInt(cubeInfo[jsonplace]) + 1
   }
-  console.log(cubeInfo);
 }
 // var notyBluePortal1 = new Noty({
 //   type: 'success',
@@ -473,7 +472,9 @@ $(document).ready(function(){
     }
   })
   //working on cycle times and saving cycle times
-  cycleFile = 'cycle/' + $('.role-team').text() + '-cycle.json'
+  teamRole = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
+  cycleFile = 'cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'
+  console.log(cycleFile);
    if (!fs.existsSync(cycleFile)) {
     fs.writeFileSync(cycleFile, JSON.stringify(cycleArray))
   }
@@ -489,32 +490,32 @@ $(document).ready(function(){
     console.log(cycleTime);
     //figuring out location of drop and recording cycle time under that place
     if ($(this).attr('data-place') == 'redExchange' || $(this).attr('data-place') == 'blueExchange') {
-      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'));
       var n = cycleJSON['exchange'].length
       cycleJSON['exchange'][n] = cycleTime
-      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON))
-      time = 0
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json', JSON.stringify(cycleJSON))
+      time = undefined
     }
     else if ($(this).attr('data-place') == 'scale') {
-      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'));
       var n = cycleJSON['scale'].length
       cycleJSON['scale'][n] = cycleTime
-      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-      time = 0
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json', JSON.stringify(cycleJSON));
+      time = undefined
     }
     else if ($(this).attr('data-place') == 'redSwitch') {
-      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'));
       var n = cycleJSON['redswitch'].length
       cycleJSON['redswitch'][n] = cycleTime
-      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-      time = 0
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json', JSON.stringify(cycleJSON));
+      time = undefined
     }
     else if ($(this).attr('data-place') == 'blueSwitch') {
-      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-cycle.json'));
+      var cycleJSON = JSON.parse(fs.readFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'));
       var n = cycleJSON['blueswitch'].length
       cycleJSON['blueswitch'][n] = cycleTime
-      fs.writeFileSync('cycle/' + $('.role-team').text() + '-cycle.json', JSON.stringify(cycleJSON));
-      time = 0
+      fs.writeFileSync('cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json', JSON.stringify(cycleJSON));
+      time = undefined
     }
     //figuring out the location of the cycle drop
     // for (var i = 0; i < 7; i++) {
@@ -560,12 +561,10 @@ $(document).ready(function(){
     }
     $('.btn-done').click(function(){
       file = JSON.parse(fs.readFileSync(fileName, 'utf8'))
-      console.log(Object.keys(file).length, file);
       for (var i in cubeInfo) {
         if (cubeInfo.hasOwnProperty(i)) {
           var m = Object.keys(file).length
           var n = i
-          console.log(cubeInfo[i]);
           file[n] = cubeInfo[i]
         }
       }
