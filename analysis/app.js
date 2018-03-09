@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 // Initialization
 scout.init('blank', false);
 const baseline = 0.25; // NB: Change this to increase the threshold of assigning tag(s).
+const notetakers = 4; // NB: Number of note takers
 fs.existsSync('cycle/') ? '' : fs.mkdirSync('cycle/');
 var matches = [];
 var matchNum = 0;
@@ -67,14 +68,10 @@ for (var i = 0; i < pitfest.length; i++) {
     pit[tempPit.team] = tempPit;
   }
 };
-if (!fs.existsSync('notes/')) {
-  fs.mkdirSync('notes/');
-}
-var notefest = JSON.parse(fs.readFileSync('notes/manifest.json', 'utf8'));
-var notes = [];
-for (var i = 0; i < notefest.length; i++) {
-  notes.push(JSON.parse(fs.readFileSync('notes/' + notefest[i], 'utf8')));
-};
+var notesOne = notes('');
+var notesTwo = notes('-two');
+var notesThree = notes('-three');
+var notesFour = notes('-four');
 if (!fs.existsSync('match-data/')) {
   fs.mkdirSync('match-data/');
 }
@@ -173,6 +170,18 @@ function analyzeTags(a) {
 function getTags(a) {
   var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
   return tags[a];
+};
+function notes(a) {
+  if (!fs.existsSync('notes' + a + '/')) {
+    fs.mkdirSync('notes' + a + '/');
+    fs.writeFileSync('notes' + a + '/manifest.json', '[]');
+  }
+  var notefest = JSON.parse(fs.readFileSync('notes' + a + '/manifest.json', 'utf8'));
+  var notes = [];
+  for (var i = 0; i < notefest.length; i++) {
+    notes.push(JSON.parse(fs.readFileSync('notes' + a + '/' + notefest[i], 'utf8')));
+  };
+  return notes;
 };
 function analyzeRank() {
   if (cycle.length == 0) {
@@ -457,9 +466,24 @@ function matchDisplay(a) {
   var tempNotes = {};
   var seventhNotes = [];
   var index = 0;
-  for (var i = 0; i < notes.length; i++) {
-    if (notes[i][$('.lookup-team').text()] != undefined) {
-      tempNotes[i + 1] = ' ' + notes[i][$('.lookup-team').text()];
+  for (var i = 0; i < notesOne.length; i++) {
+    if (notesOne[i][$('.lookup-team').text()] != undefined) {
+      tempNotes[i + 1] = ' ' + notesOne[i][$('.lookup-team').text()];
+    }
+  };
+  for (var i = 0; i < notesTwo.length; i++) {
+    if (notesTwo[i][$('.lookup-team').text()] != undefined) {
+      tempNotes[i + 1] += '\n' + notesTwo[i][$('.lookup-team').text()];
+    }
+  };
+  for (var i = 0; i < notesThree.length; i++) {
+    if (notesThree[i][$('.lookup-team').text()] != undefined) {
+      tempNotes[i + 1] += '\n' + notesThree[i][$('.lookup-team').text()];
+    }
+  };
+  for (var i = 0; i < notesFour.length; i++) {
+    if (notesFour[i][$('.lookup-team').text()] != undefined) {
+      tempNotes[i + 1] += '\n' + notesFour[i][$('.lookup-team').text()];
     }
   };
   for (var i = 0; i < seventh.length; i++) {
@@ -856,15 +880,15 @@ $('.input-team-lookup > input').keydown(function () {
           timeout: 2000
         }).show();
       }
+      $('.hswitch-tbody').append(matchDisplay('hswitch'));
+      $('.oswitch-tbody').append(matchDisplay('oswitch'));
+      $('.hplatform-tbody').append(matchDisplay('hplatform'));
+      $('.oplatform-tbody').append(matchDisplay('oplatform'));
+      $('.scale-tbody').append(matchDisplay('scale'));
+      $('.exchange-tbody').append(matchDisplay('exchange'));
+      $('.portal-tbody').append(matchDisplay('portal'));
+      $('.lookup-notes').append(matchDisplay('notes'));
     }
-    $('.hswitch-tbody').append(matchDisplay('hswitch'));
-    $('.oswitch-tbody').append(matchDisplay('oswitch'));
-    $('.hplatform-tbody').append(matchDisplay('hplatform'));
-    $('.oplatform-tbody').append(matchDisplay('oplatform'));
-    $('.scale-tbody').append(matchDisplay('scale'));
-    $('.exchange-tbody').append(matchDisplay('exchange'));
-    $('.portal-tbody').append(matchDisplay('portal'));
-    $('.lookup-notes').append(matchDisplay('notes'));
   } else {
     enter = false;
     $('.after-team-lookup').remove();
