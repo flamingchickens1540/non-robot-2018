@@ -41,14 +41,16 @@ for (var i = 0; i < manifest.length; i++) {
 };
 var cycleManifest = JSON.parse(fs.readFileSync('cycle/manifest.json', 'utf8'));
 for (var i = 0; i < cycleManifest.length; i++) {
-  cycle.push(JSON.parse(fs.readFileSync(cycleManifest[i])));
+  cycle.push(JSON.parse(fs.readFileSync('cycle/' + cycleManifest[i])));
 };
 fs.existsSync('export/') ? '' : fs.mkdirSync('export/');
 fs.existsSync('resources/') ? '' : fs.mkdirSync('resources/');
 for (var i = 0; i < data.length; i++) {
   saveTags = analyzeTags(data[i].team);
   totTags[data[i].team] = saveTags[0];
-  totTeams.push(data[i].team);
+  if (totTeams.indexOf(data[i].team) < 0) {
+    totTeams.push(data[i].team);
+  }
   teamCubeData[data[i].team] = saveTags[1];
 };
 fs.writeFileSync('export/tags.json', JSON.stringify(totTags));
@@ -82,304 +84,320 @@ for (var i = 0; i < seventhfest.length; i++) {
   seventh.push(JSON.parse(fs.readFileSync('match-data/' + seventhfest[i], 'utf8')));
   seventh[i].teams = sched[parseInt(seventh[i].match)];
 };
+
 // Functions
 String.prototype.titleCase = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 function analyzeTags(a) {
-  var teamInfo = [];
-  var matches;
-  var switching = [];
-  var scaling = [];
-  var exchanging = [];
-  var defending = [];
-  var total = [];
-  var switchAvg = 0;
-  var scaleAvg = 0;
-  var exchangeAvg = 0;
-  var defenseAvg = 0;
-  var totAvg = 0;
-  var tags = [];
-  var returnArray = [];
-  for (var i = 0; i < data.length; i++) {
-    if (data[i].team == a) {
-      teamInfo.push(data[i]);
-    }
-  };
-  matches = teamInfo.length;
-  for (var i = 0; i < teamInfo.length; i++) {
-    if (teamInfo[i]['role']!=undefined){
-    // BUG: tern this
-    switching[i] =
-      (isNaN(parseInt(teamInfo[i].switchAuto)) ? 0 : parseInt(teamInfo[i].switchAuto)) +
-      (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)) : (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)));
-    scaling[i] =
-      (isNaN(parseInt(teamInfo[i].scaleAuto)) ? 0 : parseInt(teamInfo[i].scaleAuto)) +
-      (isNaN(parseInt(teamInfo[i].scale)) ? 0 : parseInt(teamInfo[i].scale));
-    // exchanging[i] = 0;
-    // for (var j = 0; j < (teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i].redExchange : teamInfo[i].blueExchange).length; j++) {
-    //   if ((teamInfo[i]['role'].indexOf('r') >= 0 ? teamInfo[i]['redExchange'][j] : teamInfo[i]['blueExchange'][j]) == 'place') {
-    //     exchanging[i]++;
-    //   }
-    // }
-    exchanging[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].redExchange)) ? 0 : parseInt(teamInfo[i].redExchange)) : (isNaN(parseInt(teamInfo[i].blueExchange)) ? 0 : parseInt(teamInfo[i].blueExchange)));
-    // exchanging[i] += parseInt(teamInfo[i].exchangeAuto);
-    defending[i] = (teamInfo[i]['role'].indexOf('r') >= 0 ? (isNaN(parseInt(teamInfo[i].blueSwitch)) ? 0 : parseInt(teamInfo[i].blueSwitch)) : (isNaN(parseInt(teamInfo[i].redSwitch)) ? 0 : parseInt(teamInfo[i].redSwitch)));
-    total[i] = switching[i] + scaling[i] + exchanging[i] + defending[i];}
-  };
-  for (var i = 0; i < switching.length; i++) {
-    switchAvg += switching[i];
-  };
-  switchAvg /= switching.length;
-  for (var i = 0; i < scaling.length; i++) {
-    scaleAvg += scaling[i];
-  };
-  scaleAvg /= scaling.length;
-  for (var i = 0; i < exchanging.length; i++) {
-    exchangeAvg += exchanging[i];
-  };
-  exchangeAvg /= exchanging.length;
-  for (var i = 0; i < defending.length; i++) {
-    defenseAvg += defending[i];
-  };
-  defenseAvg /= defending.length;
-  for (var i = 0; i < total.length; i++) {
-    totAvg += total[i];
-  };
-  totAvg /= total.length;
-  if (false) { // NOTE: NEED TO IMPLEMENT FUTZING CODE
-    tags.push('Futzer');
-  } else {
-    if (switchAvg / totAvg > baseline) {
+  if (a != undefined) {
+    var info = {
+      switching: 0,
+      scaling: 0,
+      exchanging: 0,
+      defending: 0,
+      total: 0
+    };
+    var percent = {
+      switching: 0,
+      scaling: 0,
+      exchanging: 0,
+      defending: 0
+    };
+    var tags = [];
+    var index = 0;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].team == a) {
+        index++;
+        if (data[i]['role'] != undefined && data[i]['role'].indexOf('r') >= 0) {
+          if (!isNaN(parseInt(data[i].redSwitch))) {
+            info.switching += parseInt(data[i].redSwitch);
+            info.total += parseInt(data[i].redSwitch);
+          }
+          if (!isNaN(parseInt(data[i].blueSwitch))) {
+            info.defending += parseInt(data[i].blueSwitch);
+            info.total += parseInt(data[i].blueSwitch);
+          }
+          if (!isNaN(parseInt(data[i].redExchange))) {
+            info.exchanging += parseInt(data[i].redExchange);
+            info.total += parseInt(data[i].redExchange);
+          }
+        } else if (data[i]['role'] != undefined && data[i]['role'].indexOf('b') >= 0) {
+          if (!isNaN(parseInt(data[i].redSwitch))) {
+            info.defending += parseInt(data[i].redSwitch);
+            info.total += parseInt(data[i].redSwitch);
+          }
+          if (!isNaN(parseInt(data[i].blueSwitch))) {
+            info.switching += parseInt(data[i].blueSwitch);
+            info.total += parseInt(data[i].blueSwitch);
+          }
+          if (!isNaN(parseInt(data[i].blueExchange))) {
+            info.exchanging += parseInt(data[i].blueExchange);
+            info.total += parseInt(data[i].blueExchange);
+          }
+        }
+        if (!isNaN(parseInt(data[i].switchAuto))) {
+          info.switching += parseInt(data[i].switchAuto);
+          info.total += parseInt(data[i].switchAuto);
+        }
+        if (!isNaN(parseInt(data[i].scale))) {
+          info.scaling += parseInt(data[i].scale);
+          info.total += parseInt(data[i].scale);
+        }
+        if (!isNaN(parseInt(data[i].scaleAuto))) {
+          info.scaling += parseInt(data[i].scaleAuto);
+          info.total += parseInt(data[i].scaleAuto);
+        }
+      }
+    };
+    percent.switching = parseFloat((info.switching / (info.total == 0 ? 1 : info.total)).toFixed(2));
+    percent.scaling = parseFloat((info.scaling / (info.total == 0 ? 1 : info.total)).toFixed(2));
+    percent.exchanging = parseFloat((info.exchanging / (info.total == 0 ? 1 : info.total)).toFixed(2));
+    percent.defending = parseFloat((info.defending / (info.total == 0 ? 1 : info.total)).toFixed(2));
+    if (percent.switching > baseline) {
       tags.push('Switcher');
     }
-    if (scaleAvg / totAvg > baseline) {
+    if (percent.scaling > baseline) {
       tags.push('Scaler');
     }
-    if (exchangeAvg / totAvg > baseline) {
+    if (percent.exchanging > baseline) {
       tags.push('Exchanger');
     }
-    if (defenseAvg / totAvg > baseline) {
+    if (percent.defending > baseline) {
       tags.push('Defender');
     }
+    return [tags, [parseFloat((info.switching / index).toFixed(2)), parseFloat((info.scaling / index).toFixed(2)), parseFloat((info.exchanging / index).toFixed(2)), parseFloat((info.defending / index).toFixed(2)), parseFloat((info.total / index).toFixed(2))]];
   }
-  returnArray = [tags, [switchAvg, scaleAvg, exchangeAvg, defenseAvg, totAvg]];
-  return returnArray;
+  return [[false], [false, false, false, false, false]];
 };
 function getTags(a) {
   var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
   return tags[a];
 };
 function analyzeRank() {
-   var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
-   var ranking = {
-     'switch': {},
-     'scale': {},
-     'exchange': {},
-     'defense': {},
-     'futz': []
-   };
-   for (var team in tags) {
-     if (tags.hasOwnProperty(team)) {
-       if (tags[team].length > 0) {
-         for (var i = 0; i < tags[team].length; i++) {
-           temp = 0;
-           switch (tags[team][i]) {
-             case 'Switcher':
-               for (var j = 0; j < data.length; j++) {
-                 if (data[j].team == team) {
-                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0) : (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0));
-                 }
-               };
-               ranking['switch'][team] = [1, temp];
-               break;
-             case 'Scaler':
-               for (var j = 0; j < data.length; j++) {
-                 if (data[j].team == team) {
-                   temp += data[j]['scale'] == undefined ? 0 : (data[j]['scale']);
-                 }
-               };
-               ranking['scale'][team] = [1, temp];
-               break;
-             case 'Exchanger':
-               for (var j = 0; j < data.length; j++) {
-                 if (data[j].team == team) {
-                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redExchange'] != undefined ? data[j]['redExchange'] : 0) : (data[j]['blueExchange'] != undefined ? data[j]['blueExchange'] : 0));
-                 }
-               };
-               ranking['exchange'][team] = [1, temp];
-               break;
-             case 'Defender':
-               for (var j = 0; j < data.length; j++) {
-                 if (data[j].team == team) {
-                   temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0) : (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0));
-                 }
-               };
-               ranking['defense'][team] = [1, temp];
-               break;
-           };
-         };
-       } else {
-         ranking['futz'].push(team);
-       }
-       for (var info in ranking['switch']) {
-         if (ranking['switch'].hasOwnProperty(info)) {
-           rank = 1;
-           teamList = Object.keys(ranking['switch']);
-           for (var i = 0; i < teamList.length; i++) {
-             if (ranking['switch'][info][1] < ranking['switch'][teamList[i]][1]) {
-               rank++;
-             }
-           };
-           ranking['switch'][info][0] = rank;
-         }
-       };
-       for (var info in ranking['scale']) {
-         if (ranking['scale'].hasOwnProperty(info)) {
-           rank = 1;
-           teamList = Object.keys(ranking['scale']);
-           for (var i = 0; i < teamList.length; i++) {
-             if (ranking['scale'][info][1] < ranking['scale'][teamList[i]][1]) {
-               rank++;
-             }
-           };
-           ranking['scale'][info][0] = rank;
-         }
-       };
-       for (var info in ranking['exchange']) {
-         if (ranking['exchange'].hasOwnProperty(info)) {
-           rank = 1;
-           teamList = Object.keys(ranking['exchange']);
-           for (var i = 0; i < teamList.length; i++) {
-             if (ranking['exchange'][info][1] < ranking['exchange'][teamList[i]][1]) {
-               rank++;
-             }
-           };
-           ranking['exchange'][info][0] = rank;
-         }
-       };
-       for (var info in ranking['defense']) {
-         if (ranking['defense'].hasOwnProperty(info)) {
-           rank = 1;
-           teamList = Object.keys(ranking['defense']);
-           for (var i = 0; i < teamList.length; i++) {
-             if (ranking['defense'][info][1] < ranking['defense'][teamList[i]][1]) {
-               rank++;
-             }
-           };
-           ranking['defense'][info][0] = rank;
-         }
-       };
-     }
-   };
-   fs.writeFileSync('export/rankings.json', JSON.stringify(ranking));
-   return ranking;
+  if (cycle.length == 0) {
+    return analyzeCubes();
+  }
+  return analyzeCycles();
 };
-// function analyzeRank() {
-//  var teamCycleAvg = {};
-//  var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
-//  var switchers = [];
-//  var scalers = [];
-//  var exchangers = [];
-//  var defenders = [];
-//  var newAvg = {};
-//  for (var i = 0; i < cycle.length; i++) {
-//    var avg = {};
-//    for (var attr in cycle[i]) {
-//      if (cycle[i].hasOwnProperty(attr)) {
-//        if (attr != 'team') {
-//          avg[attr] = 0;
-//          for (var j = 0; j < cycle[i][attr].length; j++) {
-//            avg[attr] += cycle[i][attr][j];
-//            if (j + 1 == cycle[i][attr].length) {
-//              avg[attr] /= j + 1;
-//            }
-//          };
-//        }
-//      }
-//    };
-//    teamCycleAvg[cycle[i].team] = avg;
-//  };
-//  for (var team in teamCycleAvg) {
-//    if (teamCycleAvg.hasOwnProperty(team)) {
-//      for (var tag in teamCycleAvg[team]) {
-//        if (teamCycleAvg[team].hasOwnProperty(tag)) {
-//          newAvg[team] = newAvg[team] == undefined ? {} : newAvg[team];
-//          switch (tag) {
-//            case 'redswitch':
-//              if (tags[team].indexOf('Switcher') >= 0) {
-//                switchers.push(teamCycleAvg[team]['switch']);
-//                newAvg[team]['switch'] = teamCycleAvg[team]['switch'];
-//              }
-//              break;
-//            case 'scale':
-//              if (tags[team].indexOf('Scaler') >= 0) {
-//                scalers.push(teamCycleAvg[team]['scale']);
-//                newAvg[team]['scale'] = teamCycleAvg[team]['scale'];
-//              }
-//              break;
-//            case 'exchange':
-//              if (tags[team].indexOf('Exchanger') >= 0) {
-//                exchangers.push(teamCycleAvg[team]['exchange']);
-//                newAvg[team]['exchange'] = teamCycleAvg[team]['exchange'];
-//              }
-//              break;
-//            case 'blueswitch':
-//              if (tags[team].indexOf('Defender') >= 0) {
-//                defenders.push(teamCycleAvg[team]['blueswitch']);
-//                newAvg[team]['defense'] = teamCycleAvg[team]['blueswitch'];
-//              }
-//              break;
-//          };
-//        }
-//      };
-//    }
-//  };
-//  switchers.sort(function (a, b) {return a - b;});
-//  scalers.sort(function (a, b) {return a - b;});
-//  exchangers.sort(function (a, b) {return a - b;});
-//  defenders.sort(function (a, b) {return a - b;});
-//  for (var team in newAvg) {
-//    if (newAvg.hasOwnProperty(team)) {
-//      for (var tag in newAvg[team]) {
-//        if (newAvg[team].hasOwnProperty(tag)) {
-//          switch (tag) {
-//            case 'switch':
-//              for (var i = 0; i < switchers.length; i++) {
-//                if (switchers[i] == newAvg[team]['switch']) {
-//                  newAvg[team]['switch'] = [i + 1, newAvg[team]['switch']];
-//                }
-//              };
-//              break;
-//            case 'scale':
-//              for (var i = 0; i < scalers.length; i++) {
-//                if (scalers[i] == newAvg[team]['scale']) {
-//                  newAvg[team]['scale'] = [i + 1, newAvg[team]['scale']];
-//                }
-//              };
-//              break;
-//            case 'exchange':
-//              for (var i = 0; i < exchangers.length; i++) {
-//                if (exchangers[i] == newAvg[team]['exchange']) {
-//                  newAvg[team]['exchange'] = [i + 1, newAvg[team]['exchange']];
-//                }
-//              };
-//              break;
-//            case 'defense':
-//              for (var i = 0; i < defenders.length; i++) {
-//                if (defenders[i] == newAvg[team]['defense']) {
-//                  newAvg[team]['defense'] = [i + 1, newAvg[team]['defense']];
-//                }
-//              };
-//              break;
-//          };
-//        }
-//      };
-//    }
-//  };
-//  fs.writeFileSync('export/rankings.json', JSON.stringify(newAvg));
-//  return newAvg;
-// };
+function analyzeCubes() {
+  var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+  var ranking = {
+    'switch': {},
+    'scale': {},
+    'exchange': {},
+    'defense': {},
+    'futz': []
+  };
+  for (var team in tags) {
+    if (tags.hasOwnProperty(team)) {
+      if (tags[team].length > 0) {
+        for (var i = 0; i < tags[team].length; i++) {
+          temp = 0;
+          switch (tags[team][i]) {
+            case 'Switcher':
+              for (var j = 0; j < data.length; j++) {
+                if (data[j].team == team) {
+                  temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0) : (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0));
+                }
+              };
+              ranking['switch'][team] = [1, temp];
+              break;
+            case 'Scaler':
+              for (var j = 0; j < data.length; j++) {
+                if (data[j].team == team) {
+                  temp += data[j]['scale'] == undefined ? 0 : (data[j]['scale']);
+                }
+              };
+              ranking['scale'][team] = [1, temp];
+              break;
+            case 'Exchanger':
+              for (var j = 0; j < data.length; j++) {
+                if (data[j].team == team) {
+                  temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['redExchange'] != undefined ? data[j]['redExchange'] : 0) : (data[j]['blueExchange'] != undefined ? data[j]['blueExchange'] : 0));
+                }
+              };
+              ranking['exchange'][team] = [1, temp];
+              break;
+            case 'Defender':
+              for (var j = 0; j < data.length; j++) {
+                if (data[j].team == team) {
+                  temp += (data[j]['role'].indexOf('r') >= 0 ? (data[j]['blueSwitch'] != undefined ? data[j]['blueSwitch'] : 0) : (data[j]['redSwitch'] != undefined ? data[j]['redSwitch'] : 0));
+                }
+              };
+              ranking['defense'][team] = [1, temp];
+              break;
+          };
+        };
+      } else {
+        ranking['futz'].push(team);
+      }
+      for (var info in ranking['switch']) {
+        if (ranking['switch'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['switch']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['switch'][info][1] < ranking['switch'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['switch'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['scale']) {
+        if (ranking['scale'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['scale']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['scale'][info][1] < ranking['scale'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['scale'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['exchange']) {
+        if (ranking['exchange'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['exchange']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['exchange'][info][1] < ranking['exchange'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['exchange'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['defense']) {
+        if (ranking['defense'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['defense']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['defense'][info][1] < ranking['defense'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['defense'][info][0] = rank;
+        }
+      };
+    }
+  };
+  fs.writeFileSync('export/rankings.json', JSON.stringify(ranking));
+  return ranking;
+};
+function analyzeCycles() {
+  var tags = JSON.parse(fs.readFileSync('export/tags.json', 'utf8'));
+  var ranking = {
+    'switch': {},
+    'scale': {},
+    'exchange': {},
+    'defense': {},
+    'futz': []
+  };
+  for (var team in tags) {
+    if (tags.hasOwnProperty(team)) {
+      if (tags[team].length > 0) {
+        for (var i = 0; i < tags[team].length; i++) {
+          var index = 0;
+          switch (tags[team][i]) {
+            case 'Switcher':
+              if (ranking['switch'][team] == undefined) {
+                ranking['switch'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['switch'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['switch'][team][1] /= index;
+              break;
+            case 'Scaler':
+              if (ranking['scale'][team] == undefined) {
+                ranking['scale'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['scale'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['scale'][team][1] /= index;
+              break;
+            case 'Exchanger':
+              if (ranking['exchange'][team] == undefined) {
+                ranking['exchange'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['exchange'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['exchange'][team][1] /= index;
+              break;
+            case 'Defender':
+              if (ranking['defense'][team] == undefined) {
+                ranking['defense'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['defense'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['defense'][team][1] /= index;
+              break;
+          };
+        };
+      } else {
+        ranking['futz'].push(team);
+      }
+      for (var info in ranking['switch']) {
+        if (ranking['switch'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['switch']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['switch'][info][1] > ranking['switch'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['switch'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['scale']) {
+        if (ranking['scale'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['scale']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['scale'][info][1] > ranking['scale'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['scale'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['exchange']) {
+        if (ranking['exchange'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['exchange']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['exchange'][info][1] > ranking['exchange'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['exchange'][info][0] = rank;
+        }
+      };
+      for (var info in ranking['defense']) {
+        if (ranking['defense'].hasOwnProperty(info)) {
+          rank = 1;
+          teamList = Object.keys(ranking['defense']);
+          for (var i = 0; i < teamList.length; i++) {
+            if (ranking['defense'][info][1] > ranking['defense'][teamList[i]][1]) {
+              rank++;
+            }
+          };
+          ranking['defense'][info][0] = rank;
+        }
+      };
+    }
+  };
+  fs.writeFileSync('export/rankings.json', JSON.stringify(ranking));
+  return ranking;
+};
 function displayRank(a, b) {
   var index = 0;
   $('.cell-rankings-' + b).append(`
@@ -414,7 +432,7 @@ function modal(a, b, c) {
   }
   return (`
     <div class="modal fade" id="` + a + `" role="dialog" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-body">
             <table class="table table-hover">
@@ -435,43 +453,30 @@ function modal(a, b, c) {
     </div>
   `);
 };
-function parseExchange(a) {
-  // var load = 0;
-  // var place = 0;
-  // for (var i = 0; i < a.length; i++) {
-  //   if (a[i] == 'load') {
-  //     load[i]++;
-  //   } else {
-  //     place++;
-  //   }
-  // };
-  // return 'Load: ' + load + ', Place: ' + place;
-  return a;
-};
 function matchDisplay(a) {
-  var tempNotes = [];
+  var tempNotes = {};
   var seventhNotes = [];
   var index = 0;
   for (var i = 0; i < notes.length; i++) {
     if (notes[i][$('.lookup-team').text()] != undefined) {
-      tempNotes.push(' ' + notes[i][$('.lookup-team').text()]);
+      tempNotes[i + 1] = ' ' + notes[i][$('.lookup-team').text()];
     }
   };
   for (var i = 0; i < seventh.length; i++) {
     var teamVal = seventh[i]['teams'].indexOf($('.lookup-team').text());
     seventhNotes.push([teamVal <= 2 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal], seventh[i]['scale-' + teamVal], teamVal >= 3 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal]]);
   };
-
   for (var i = 0; i < data.length; i++) {
     if (data[i].team == $('.lookup-team').text()) {
+      currentScout = data[i].scouts == undefined ? 'Anonymous Scout' : scouts[JSON.parse(data[i].scouts).scout];
       switch (a) {
         case 'hswitch':
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + data[i].switchAuto + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redSwitch : data[i].blueSwitch) + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i].switchAuto == undefined ? 0 : data[i].switchAuto) + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].redSwitch == undefined ? 0 : data[i].redSwitch) : (data[i].blueSwitch == undefined ? 0 : data[i].blueSwitch)) + `</td>
             </tr>
           `);
           break;
@@ -479,25 +484,26 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].blueSwitch : data[i].redSwitch) + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].blueSwitch == undefined ? 0 : data[i].blueSwitch) : (data[i].redSwitch == undefined ? 0 : data[i].redSwitch)) + `</td>
             </tr>
           `);
           break;
         case 'hplatform':
           var climbType;
-          if (data[i]['assist'] != undefined) {
-            climbType = 'Assist: ' + JSON.parse(data[i]['assist']);
+          climbType = data[i].climb == undefined ? '❌' : data[i].climb;
+          if (data[i].assist != undefined) {
+            climbType = data[i].assist == 'false' ? climbType : climbType + ': ' + data[i].assist;
           }
-          if (data[i]['noclimb'] != undefined) {
-            climbType = 'No Climb: ' + data[i]['noclimb'];
+          if (data[i].noclimb != undefined) {
+            climbType = data[i].noclimb == 'false' ? '❌' : data[i].noclimb;
           }
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPlatformCube : data[i].bluePlatformCube) + `</td>
-              <td>` + data[i]['climb'] + '<br>(' + climbType + ')' + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].redPlatformCube == undefined ? 0 : data[i].redPlatformCube) : (data[i].bluePlatformCube == undefined ? 0 : data[i].bluePlatformCube)) + `</td>
+              <td>` + climbType + `</td>
               <td>` + (data[i].climbNotes == undefined ? 'None :(' : data[i].climbNotes) + `</td>
             </tr>
           `);
@@ -506,8 +512,8 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].bluePlatformCube) : parseExchange(data[i].redPlatformCube)) + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].bluePlatformCube == undefined ? 0 : data[i].bluePlatformCube) : (data[i].redPlatformCube == undefined ? 0 : data[i].redPlatformCube)) + `</td>
             </tr>
           `);
           break;
@@ -515,9 +521,9 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + data[i].scaleAuto + `</td>
-              <td>` + data[i].scale + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i].scaleAuto == undefined ? 0 : data[i].scaleAuto) + `</td>
+              <td>` + (data[i].scale == undefined ? 0 : data[i].scale) + `</td>
             </tr>
           `);
           break;
@@ -525,8 +531,8 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? parseExchange(data[i].redExchange) : parseExchange(data[i].blueExchange)) + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].redExchange == undefined ? 0 : data[i].redExchange) : (data[i].blueExchange == undefined ? 0 : data[i].blueExchange)) + `</td>
             </tr>
           `);
           break;
@@ -534,8 +540,8 @@ function matchDisplay(a) {
           $('.' + a + '-tbody').append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + (data[i]['role'].indexOf('r') >= 0 ? data[i].redPortal : data[i].bluePortal) + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i]['role'].indexOf('r') >= 0 ? (data[i].redPortal == undefined ? 0 : data[i].redPortal) : (data[i].bluePortal == undefined ? 0 : data[i].bluePortal)) + `</td>
             </tr>
           `);
           break;
@@ -543,10 +549,10 @@ function matchDisplay(a) {
           $('.lookup-' + a).append(`
             <tr>
               <td>` + data[i].match + `</td>
-              <td>` + "HI" + `</td>
-              <td>` + data[i].crossLine + `</td>
+              <td>` + currentScout + `</td>
+              <td>` + (data[i].crossLine ? '✅' : '❌') + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
-              <td>` + tempNotes[index] + `</td>
+              <td>` + (tempNotes[data[i].match] == undefined ? 'None :(' : tempNotes[data[i].match]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
               <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
@@ -635,6 +641,7 @@ scout.page('Match Schedule', [4, 4, 4]);
 for (var i = 0; i < matches.length; i++) {
   matchNum = matchNum == 3 ? 0 : matchNum + 1;
   $('.cell-match-schedule-' + matchNum).append(`
+    <br><br>
     <h3 style="text-align: center;">Match ` + matches[i] + `</h3>
     <br><br>
     <div style="text-align: center;">
@@ -686,24 +693,24 @@ $('.input-team-lookup > input').keydown(function () {
       //   };
       // }
       var template = {
-        "team":"N/A",
-        "scout":"N/A",
-        "phone":"N/A",
-        "occupation":"N/A",
-        "switchAuto":"N/A",
-        "scaleAuto":"N/A",
-        "exchangeAuto":"N/A",
-        "twoCubeAuto":"N/A",
-        "lineAuto":"N/A",
-        "robotRole":["N/A"],
-        "robotRoleNotes":"N/A",
-        "climb":"N/A",
-        "climbNotes":"N/A",
-        "cubeLoad":["N/A"],
-        "lang":"N/A",
-        "driveTrain":"N/A",
-        "weight":"N/A",
-        "notes":"N/A"
+        'team': 'N/A',
+        'scout': 'N/A',
+        'phone': 'N/A',
+        'occupation': 'N/A',
+        'switchAuto': 'N/A',
+        'scaleAuto': 'N/A',
+        'exchangeAuto': 'N/A',
+        'twoCubeAuto': 'N/A',
+        'lineAuto': 'N/A',
+        'robotRole': ['N/A'],
+        'robotRoleNotes': 'N/A',
+        'climb': 'N/A',
+        'climbNotes': 'N/A',
+        'cubeLoad': ['N/A'],
+        'lang': 'N/A',
+        'driveTrain': 'N/A',
+        'weight': 'N/A',
+        'notes': 'N/A'
       };
       if (pit[$(this).val()] == undefined) {
         pit[$(this).val()] = {};
@@ -711,7 +718,7 @@ $('.input-team-lookup > input').keydown(function () {
       for (var i in template) {
         if (template.hasOwnProperty(i)) {
           if (pit[$(this).val()][i] == undefined) {
-            pit[$(this).val()][i] = 'N/A';
+            pit[$(this).val()][i] = ['N/A'];
           }
         }
       };
@@ -735,7 +742,7 @@ $('.input-team-lookup > input').keydown(function () {
               <area class="lookup-scale" shape="rect" coords="580, 280, 648, 319" data-toggle="modal" data-target="#scale">
               ` + modal('scale', true) + `
               <area class="lookup-exchange" shape="rect" coords="108, 187, 266, 225" data-toggle="modal" data-target="#exchange">
-              ` + modal('exchange',) + `
+              ` + modal('exchange') + `
               <area class="lookup-portal" shape="rect" coords="1103, 24, 1174, 64" data-toggle="modal" data-target="#portal">
               ` + modal('portal', false) + `
             </map>
@@ -749,9 +756,9 @@ $('.input-team-lookup > input').keydown(function () {
                   <th scope="col">Cross Line</th>
                   <th scope="col">Stand App Notes</th>
                   <th scope="col">Notes App Notes</th>
-                  <th scope="col">Seventh Scout - Switch</th>
-                  <th scope="col">Seventh Scout - Scale</th>
-                  <th scope="col">Seventh Scout - Defense</th>
+                  <th scope="col">Switch</th>
+                  <th scope="col">Scale</th>
+                  <th scope="col">Defense</th>
                 </tr>
               </thead>
               <tbody class="lookup-notes"></tbody>
@@ -770,7 +777,7 @@ $('.input-team-lookup > input').keydown(function () {
                     <br>
                     <div class="row">
                       <div class="col-sm-4">`
-                      + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : 'Student') + `)`)
+                      + card('Phone Number', pit[$(this).val()]['phone'] + ` (` + (pit[$(this).val()]['occupation'] == 'true' ? 'Mentor' : (pit[$(this).val()]['occupation'] == 'false' ? 'Student' : 'N/A')) + `)`)
                       + card('Scale Auto', pit[$(this).val()]['scaleAuto'])
                       + card('Climb', (pit[$(this).val()]['climb'] == 'false' ? 'No Climb :(' : pit[$(this).val()]['climb']))
                       + card('Cube Load Location', (pit[$(this).val()]['cubeLoad'] == undefined ? 'nope' : prettifyArray(pit[$(this).val()]['cubeLoad'])))
@@ -819,7 +826,6 @@ $('.input-team-lookup > input').keydown(function () {
               temp = 'defense'
               break;
           }
-          console.log(rankings, $('.lookup-team').text(), temp);
           $('.analysis-tags').append('<button class="btn btn-outline-info">' + lookupTags[i] + ' - ' + rankings[temp][$('.lookup-team').text()][0] + '</button>&nbsp;&nbsp;&nbsp;');
         };
         var lev = 0;
@@ -846,7 +852,8 @@ $('.input-team-lookup > input').keydown(function () {
       } else {
         new Noty({
           text: 'This team is not competing at this event, or maybe they\'re an FLL team.',
-          type: 'error'
+          type: 'error',
+          timeout: 2000
         }).show();
       }
     }
@@ -915,9 +922,15 @@ for (var i = 0; i < tempTeams.length; i++) {
     </tr>
   `);
 };
+sortable = $('.picklist-table').sortable({
+  connectWith: '.picklist-table',
+  items: ".sorting-initialize"
+});
+sortable.find('.team-pick').one('mouseenter',function(){
+    $(this).addClass('sorting-initialize');
+    sortable.sortable('refresh');
+});
 $('.picklist-table')
-  .sortable()
-  .disableSelection()
   .mouseup(function () {
     setTimeout(function () {
       $('.team-pick').each(function (i) {

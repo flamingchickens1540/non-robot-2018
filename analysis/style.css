@@ -1,3 +1,6 @@
+body{
+  overflow-x: hidden;
+}
 .btn-lookup{
   position: absolute;
 }
