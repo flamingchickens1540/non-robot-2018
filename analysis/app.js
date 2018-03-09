@@ -175,7 +175,7 @@ function getTags(a) {
   return tags[a];
 };
 function analyzeRank() {
-  if (cycle.length != totTeams.length) {
+  if (cycle.length == 0) {
     return analyzeCubes();
   }
   return analyzeCycles();
@@ -298,25 +298,49 @@ function analyzeCycles() {
     if (tags.hasOwnProperty(team)) {
       if (tags[team].length > 0) {
         for (var i = 0; i < tags[team].length; i++) {
+          var index = 0;
           switch (tags[team][i]) {
             case 'Switcher':
               if (ranking['switch'][team] == undefined) {
                 ranking['switch'][team] = [1, 0];
               }
               for (var j = 0; j < cycle.length; j++) {
-                ranking['switch'][team]
+                ranking['switch'][team][1] += cycle[j];
+                index++;
               };
+              ranking['switch'][team][1] /= index;
               break;
             case 'Scaler':
-
+              if (ranking['scale'][team] == undefined) {
+                ranking['scale'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['scale'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['scale'][team][1] /= index;
               break;
             case 'Exchanger':
-
+              if (ranking['exchange'][team] == undefined) {
+                ranking['exchange'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['exchange'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['exchange'][team][1] /= index;
               break;
             case 'Defender':
-
+              if (ranking['defense'][team] == undefined) {
+                ranking['defense'][team] = [1, 0];
+              }
+              for (var j = 0; j < cycle.length; j++) {
+                ranking['defense'][team][1] += cycle[j];
+                index++;
+              };
+              ranking['defense'][team][1] /= index;
               break;
-          }
+          };
         };
       } else {
         ranking['futz'].push(team);
@@ -326,7 +350,7 @@ function analyzeCycles() {
           rank = 1;
           teamList = Object.keys(ranking['switch']);
           for (var i = 0; i < teamList.length; i++) {
-            if (ranking['switch'][info][1] < ranking['switch'][teamList[i]][1]) {
+            if (ranking['switch'][info][1] > ranking['switch'][teamList[i]][1]) {
               rank++;
             }
           };
@@ -338,7 +362,7 @@ function analyzeCycles() {
           rank = 1;
           teamList = Object.keys(ranking['scale']);
           for (var i = 0; i < teamList.length; i++) {
-            if (ranking['scale'][info][1] < ranking['scale'][teamList[i]][1]) {
+            if (ranking['scale'][info][1] > ranking['scale'][teamList[i]][1]) {
               rank++;
             }
           };
@@ -350,7 +374,7 @@ function analyzeCycles() {
           rank = 1;
           teamList = Object.keys(ranking['exchange']);
           for (var i = 0; i < teamList.length; i++) {
-            if (ranking['exchange'][info][1] < ranking['exchange'][teamList[i]][1]) {
+            if (ranking['exchange'][info][1] > ranking['exchange'][teamList[i]][1]) {
               rank++;
             }
           };
@@ -362,7 +386,7 @@ function analyzeCycles() {
           rank = 1;
           teamList = Object.keys(ranking['defense']);
           for (var i = 0; i < teamList.length; i++) {
-            if (ranking['defense'][info][1] < ranking['defense'][teamList[i]][1]) {
+            if (ranking['defense'][info][1] > ranking['defense'][teamList[i]][1]) {
               rank++;
             }
           };
