@@ -131,6 +131,23 @@
   width: 10.5vw;
   font-size: 1.25vw;
 }
+.giza-blue{
+  position: absolute;
+  left: 56.5vw;
+  top: 38vh;
+  right: 50vh;
+  height: 5vh;
+  width: 8vw;
+  font-size: 1.25vw;
+}
+.giza-red{
+  position: absolute;
+  left: 16vw;
+  top: 38vh;
+  height: 5vh;
+  width: 8vw;
+  font-size: 1.25vw;
+}
 .body-div-teleop hr{
   display: none;
 }

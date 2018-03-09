@@ -21,6 +21,7 @@ scout.init('stand', true);
 // var notygiza;
 var cubeInfo = {};
 var cycleFile;
+var cycleFile2;
 var color;
 var time;
 var cycleTime;
@@ -55,11 +56,18 @@ var roleNum;
 var matchNum;
 var fileName;
 var file;
+if (!fs.existsSync('scouting/flip.txt')) {
+  fs.writeFileSync('scouting/flip.txt', true);
+}
+var flip = JSON.parse(fs.readFileSync('scouting/flip.txt', 'utf8'));
 setTimeout(function () {
   teamNum = $('.role-team').text()
   roleNum = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
   matchNum = 'm' + $('.matchnum').val()
   fileName = 'data/' + matchNum + '-' + roleNum + '-' + teamNum + '.json'
+  if (!flip) {
+    $('.flip-sides').click()
+  }
 }, 100);
 //save function
 function save(place) {
@@ -225,10 +233,10 @@ scout.page(
     }
     else if (buttons[i].indexOf("giza") == 0) {
       if ($('.role-name').text().indexOf("Blue") == 0){
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza" style="position: absolute; left: 56.5vw; top: 38vh; right: 50vh; height: 5vh; width: 8vw; font-size: 1.25vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-primary btn-small button-giza giza-blue" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
       else{
-        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza" style="position: absolute; left: 16vw; top: 38vh; height: 5vh; width: 8vw; font-size: 1.25vw;" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
+        $('.cell-teleop-1').append('<button type="button" class="btn btn-danger btn-small button-giza giza-red" data-num="' + i + '" data-place="' + buttons[i] + '">Cube Zone</button>')
       }
     }
     else {
@@ -474,7 +482,7 @@ $(document).ready(function(){
   //working on cycle times and saving cycle times
   teamRole = $('.role-name').text().toLowerCase().charAt(0) + $('.role-name').text().charAt($('.role-name').text().indexOf(' ') + 1)
   cycleFile = 'cycle/' + $('.role-team').text() + '-' + teamRole + '-cycle.json'
-  console.log(cycleFile);
+  cycleFile2 = $('.role-team').text() + '-' + teamRole + '-cycle.json'
    if (!fs.existsSync(cycleFile)) {
     fs.writeFileSync(cycleFile, JSON.stringify(cycleArray))
   }
@@ -571,7 +579,7 @@ $(document).ready(function(){
       var newjson = JSON.stringify(file)
       fs.writeFileSync(fileName, newjson);
       var cycleManifest = JSON.parse(fs.readFileSync("cycle/manifest.json"))
-      cycleManifest.push(cycleFile);
+      cycleManifest.push(cycleFile2);
       var newManifest = JSON.stringify(cycleManifest)
       fs.writeFileSync('cycle/manifest.json', newManifest)
       var matchNum = fs.readFileSync('scouting/match.txt', 'utf-8')
@@ -593,6 +601,274 @@ $(document).ready(function(){
   $('.odd-climb').click(function(){
     $('.mc-6').hide()
     $('.mc-7').hide()
+  })
+  $('.dropdown-menu').append(
+    `<a class='dropdown-item flip-sides' style='text-align: center;'>Flip Sides</a>`
+  )
+  $('.flip-sides').click(function(){
+    fs.writeFileSync('scouting/flip.txt', !flip);
+    if ($('.button-giza').hasClass('giza-red')) {
+      $('.button-giza').removeClass('giza-red')
+      $('.button-giza').addClass('giza-blue')
+    }
+    else if ($('.button-giza').hasClass('giza-blue')) {
+      $('.button-giza').removeClass('giza-blue')
+      $('.button-giza').addClass('giza-red')
+    }
+    if ($('.cell-teleop-1').hasClass('flipped') == false) {
+      $('.cell-teleop-1').addClass('flipped')
+      $('.normalstyle').remove()
+      $('body').append(`
+        <style class="flippedstyle">
+        .cell-teleop-1{
+          min-width: 100vw !important;
+          height: 80vh;
+          margin-top: -15vh !important;
+          padding-left: 0 !important;
+          padding-right: 0;
+          background: url('flipped-field.png');
+          background-repeat: no-repeat;
+          background-position: left;
+          background-size: 80vw 60vh;
+        }
+        .button-scale{
+          position: relative;
+          left: 38vw;
+          top: 38.5vh;
+          height: 5vh;
+          width: 5vw;
+          font-size: 1.25vw;
+        }
+        .button-bluePortal1{
+          position: relative;
+          left: 65.5vw;
+          top: 12.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-redPortal1{
+          position: relative;
+          left: -22.5vw;
+          top: 12.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-bluePortal2{
+          position: relative;
+          left: 56.5vw;
+          top: 63.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-redPortal2{
+          position: relative;
+          left: -31.5vw;
+          top: 63.5vh;
+          height: 5vh;
+          width: 9vw;
+          font-size: 1.25vw;
+        }
+        .button-blueSwitch{
+          position: relative;
+          left: -19vw;
+          top: 51.5vh;
+          height: 5vh;
+          width: 8.5vw;
+          font-size: 1.25vw;
+        }
+        .button-redSwitch{
+          position: relative;
+          left: .5vw;
+          top: 51.5vh;
+          height: 5vh;
+          width: 8.5vw;
+          font-size: 1.25vw;
+        }
+        .button-redExchange{
+          position: relative;
+          left: 1.5vw;
+          top: 42.5vh;
+          height: 5vh;
+          width: 10vw;
+          font-size: 1.25vw;
+        }
+        .button-blueExchange{
+          position: relative;
+          left: -57.5vw;
+          top: 32.5vh;
+          height: 5vh;
+          width: 10.1vw;
+          font-size: 1.25vw;
+        }
+        .button-redPlatform{
+          position: relative;
+          left: -45vw;
+          top: 28vh;
+          height: 5vh;
+          width: 9vw;
+          font-size: 1.25vw;
+        }
+        .button-bluePlatform{
+          position: relative;
+          left: -50vw;
+          top: 28vh;
+          height: 5vh;
+          width: 9.5vw;
+          font-size: 1.25vw;
+        }
+        .button-ground{
+          position: relative;
+          left: 34vw;
+          top: 55vh;
+          height: 5vh;
+          width: 13vw;
+          font-size: 1.25vw;
+        }
+        .button-drop{
+          position: relative;
+          left: 22vw;
+          top: 10vh;
+          height: 5vh;
+          width: 10.5vw;
+          font-size: 1.25vw;
+        }
+        </style>
+      `);
+    }
+    else if ($('.cell-teleop-1').hasClass('flipped')) {
+      $('.cell-teleop-1').removeClass('flipped')
+      $('.flippedstyle').remove()
+      $('body').append(
+        `<style class='normalstyle'>
+        .cell-teleop-1{
+          min-width: 100vw !important;
+          height: 80vh;
+          margin-top: -15vh !important;
+          padding-left: 0 !important;
+          padding-right: 0;
+          background: url('field.png');
+          background-repeat: no-repeat;
+          background-position: left;
+          background-size: 80vw 60vh;
+        }
+        .button-scale{
+          position: relative;
+          left: 38vw;
+          top: 38.5vh;
+          height: 5vh;
+          width: 5vw;
+          font-size: 1.25vw;
+        }
+        .button-bluePortal1{
+          position: relative;
+          left: -4.5vw;
+          top: 12.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-redPortal1{
+          position: relative;
+          left: 47.5vw;
+          top: 12.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-bluePortal2{
+          position: relative;
+          left: -13vw;
+          top: 63.5vh;
+          height: 5vh;
+          font-size: 1.25vw;
+          width: 9vw;
+        }
+        .button-redPortal2{
+          position: relative;
+          left: 38.5vw;
+          top: 63.5vh;
+          height: 5vh;
+          width: 9vw;
+          font-size: 1.25vw;
+        }
+        .button-blueSwitch{
+          position: relative;
+          left: 9vw;
+          top: 51.5vh;
+          height: 5vh;
+          width: 8.5vw;
+          font-size: 1.25vw;
+        }
+        .button-redSwitch{
+          position: relative;
+          left: -27vw;
+          top: 51.5vh;
+          height: 5vh;
+          width: 8.5vw;
+          font-size: 1.25vw;
+        }
+        .button-redExchange{
+          position: relative;
+          left: -67.5vw;
+          top: 32.5vh;
+          height: 5vh;
+          width: 10vw;
+          font-size: 1.25vw;
+        }
+        .button-blueExchange{
+          position: relative;
+          left: 11.5vw;
+          top: 43.5vh;
+          height: 5vh;
+          width: 10.1vw;
+          font-size: 1.25vw;
+        }
+        .button-redPlatform{
+          position: relative;
+          left: -59.5vw;
+          top: 28vh;
+          height: 5vh;
+          width: 9vw;
+          font-size: 1.25vw;
+        }
+        .button-bluePlatform{
+          position: relative;
+          left: -35.5vw;
+          top: 28vh;
+          height: 5vh;
+          width: 9.5vw;
+          font-size: 1.25vw;
+        }
+        .button-ground{
+          position: relative;
+          left: 34vw;
+          top: 55vh;
+          height: 5vh;
+          width: 13vw;
+          font-size: 1.25vw;
+        }
+        .button-drop{
+          position: relative;
+          left: 22vw;
+          top: 10vh;
+          height: 5vh;
+          width: 10.5vw;
+          font-size: 1.25vw;
+        }
+        </style>`
+      )
+    }
+    var noty = new Noty({
+      text: "Flipped sides of field",
+      layout: "topRight",
+      timeout: 1000,
+      progressBar: true,
+      type: "success"
+    });
+    noty.show()
   })
 })
 //14, 15 are color based 10, 9, 13, exchange
