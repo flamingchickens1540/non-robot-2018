@@ -6,7 +6,6 @@ const fs = require('fs-extra');
 // Initialization
 scout.init('blank', false);
 const baseline = 0.25; // NB: Change this to increase the threshold of assigning tag(s).
-const notetakers = 4; // NB: Number of note takers
 fs.existsSync('cycle/') ? '' : fs.mkdirSync('cycle/');
 var matches = [];
 var matchNum = 0;
@@ -464,8 +463,7 @@ function modal(a, b, c) {
 };
 function matchDisplay(a) {
   var tempNotes = {};
-  var seventhNotes = [];
-  var index = 0;
+  var seventhNotes = {};
   for (var i = 0; i < notesOne.length; i++) {
     if (notesOne[i][$('.lookup-team').text()] != undefined) {
       tempNotes[i + 1] = ' ' + notesOne[i][$('.lookup-team').text()];
@@ -488,7 +486,9 @@ function matchDisplay(a) {
   };
   for (var i = 0; i < seventh.length; i++) {
     var teamVal = seventh[i]['teams'].indexOf($('.lookup-team').text());
-    seventhNotes.push([teamVal <= 2 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal], seventh[i]['scale-' + teamVal], teamVal >= 3 ? seventh[i]['redswitch-' + teamVal] : seventh[i]['blueswitch-' + teamVal]]);
+    if (teamVal != -1) {
+      seventhNotes[i + 1] = [teamVal <= 2 ? (seventh[i]['redswitch-' + teamVal] == undefined ? 0 : seventh[i]['redswitch-' + teamVal]) : seventh[i]['blueswitch-' + teamVal], (seventh[i]['scale-' + teamVal] == undefined ? 0 : seventh[i]['scale-' + teamVal]), teamVal >= 3 ? (seventh[i]['redswitch-' + teamVal] == undefined ? 0 : seventh[i]['redswitch-' + teamVal]) : (seventh[i]['blueswitch-' + teamVal] == undefined ? 0 : seventh[i]['blueswitch-' + teamVal])];
+    }
   };
   for (var i = 0; i < data.length; i++) {
     if (data[i].team == $('.lookup-team').text()) {
@@ -577,12 +577,11 @@ function matchDisplay(a) {
               <td>` + (data[i].crossLine ? '✅' : '❌') + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + (tempNotes[data[i].match] == undefined ? 'None :(' : tempNotes[data[i].match]) + `</td>
-              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][0]) + `</td>
-              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][1]) + `</td>
-              <td>` + (seventhNotes[index] == undefined ? 0 : seventhNotes[0][2]) + `</td>
+              <td>` + (seventhNotes[data[i].match] == undefined ? 0 : seventhNotes[data[i].match][0]) + `</td>
+              <td>` + (seventhNotes[data[i].match] == undefined ? 0 : seventhNotes[data[i].match][1]) + `</td>
+              <td>` + (seventhNotes[data[i].match] == undefined ? 0 : seventhNotes[data[i].match][2]) + `</td>
             </tr>
           `);
-          index++;
           break;
       }
     }
