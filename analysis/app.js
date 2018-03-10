@@ -176,9 +176,9 @@ function notes(a) {
     fs.writeFileSync('notes' + a + '/manifest.json', '[]');
   }
   var notefest = JSON.parse(fs.readFileSync('notes' + a + '/manifest.json', 'utf8'));
-  var notes = [];
+  var notes = {};
   for (var i = 0; i < notefest.length; i++) {
-    notes.push(JSON.parse(fs.readFileSync('notes' + a + '/' + notefest[i], 'utf8')));
+    notes[notefest[i].substring(0, notefest[i].length - 5)] = JSON.parse(fs.readFileSync('notes' + a + '/' + notefest[i], 'utf8'));
   };
   return notes;
 };
@@ -464,24 +464,24 @@ function modal(a, b, c) {
 function matchDisplay(a) {
   var tempNotes = {};
   var seventhNotes = {};
-  for (var i = 0; i < notesOne.length; i++) {
+  for (var i in notesOne) {
     if (notesOne[i][$('.lookup-team').text()] != undefined) {
-      tempNotes[i + 1] = ' ' + notesOne[i][$('.lookup-team').text()];
+      tempNotes[i] = ' ' + notesOne[i][$('.lookup-team').text()];
     }
   };
-  for (var i = 0; i < notesTwo.length; i++) {
+  for (var i in notesTwo) {
     if (notesTwo[i][$('.lookup-team').text()] != undefined) {
-      tempNotes[i + 1] += '\n' + notesTwo[i][$('.lookup-team').text()];
+      tempNotes[i] += '\n' + notesTwo[i][$('.lookup-team').text()];
     }
   };
-  for (var i = 0; i < notesThree.length; i++) {
+  for (var i in notesThree) {
     if (notesThree[i][$('.lookup-team').text()] != undefined) {
-      tempNotes[i + 1] += '\n' + notesThree[i][$('.lookup-team').text()];
+      tempNotes[i] += '\n' + notesThree[i][$('.lookup-team').text()];
     }
   };
-  for (var i = 0; i < notesFour.length; i++) {
+  for (var i in notesFour) {
     if (notesFour[i][$('.lookup-team').text()] != undefined) {
-      tempNotes[i + 1] += '\n' + notesFour[i][$('.lookup-team').text()];
+      tempNotes[i] += '\n' + notesFour[i][$('.lookup-team').text()];
     }
   };
   for (var i = 0; i < seventh.length; i++) {
