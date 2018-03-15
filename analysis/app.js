@@ -574,7 +574,7 @@ function matchDisplay(a) {
             <tr>
               <td>` + data[i].match + `</td>
               <td>` + currentScout + `</td>
-              <td>` + (data[i].crossLine ? '✅' : '❌') + `</td>
+              <td>` + (data[i].crossLine == 'true' ? '✅' : '❌') + `</td>
               <td>` + (data[i].notes == undefined ? 'None :(' : data[i].notes) + `</td>
               <td>` + (tempNotes[data[i].match] == undefined ? 'None :(' : tempNotes[data[i].match]) + `</td>
               <td>` + (seventhNotes[data[i].match] == undefined ? 0 : seventhNotes[data[i].match][0]) + `</td>
