@@ -1021,7 +1021,7 @@ scout.page(
 scout.textarea(
   '.cell-endgame-1',
   'Overall notes',
-  'This robot overall was...',
+  'Overall comments. BE SURE TO DESCRIBE WHAT AUTOS THEY DID.',
   'notes'
 )
 scout.flashdrive()

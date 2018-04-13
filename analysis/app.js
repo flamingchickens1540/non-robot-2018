@@ -25,10 +25,8 @@ var sched =
     }).show();
 for (var num in sched) {
   if (sched.hasOwnProperty(num)) {
-    for (var i = 0; i < 6; i++) {
-      if (sched[num][i] == '1540') {
-        matches.push(num);
-      }
+    if (sched[num].indexOf('1540') >= 0) {
+      matches.push(num);
     }
   }
 };
@@ -662,8 +660,7 @@ $('.btn-picklist').click(function () {
 // Match Schedule
 scout.page('Match Schedule', [4, 4, 4]);
 for (var i = 0; i < matches.length; i++) {
-  matchNum = matchNum == 3 ? 0 : matchNum + 1;
-  $('.cell-match-schedule-' + matchNum).append(`
+  $('.cell-match-schedule-' + (matchNum + 1)).append(`
     <br><br>
     <h3 style="text-align: center;">Match ` + matches[i] + `</h3>
     <br><br>
@@ -677,6 +674,7 @@ for (var i = 0; i < matches.length; i++) {
       <button class="btn btn` + (sched[matches[i]][5] != 1540 ? '-outline' : '') + `-primary btn-team">` + sched[matches[i]][5] + `</button>
     </div>
   `);
+  matchNum = matchNum == 2 ? 0 : matchNum + 1;
 };
 $('.btn-team').click(function () {
   var team = $(this).text();
